@@ -1,11 +1,14 @@
-#!/usr/bin/env python3
-"""實例（作者的 54 頁工作坊 v2）：以既有 reveal.js 單檔為底，套用講者在 PPTX 手改的文字、加第二張 QR、
-fragment／auto-animate／3D 翻卡／GSAP／內嵌測驗／計時條／lightbox，升級 reveal.js 5.2.1，輸出離線單檔。
+"""實例（作者的 55 頁工作坊 v2）：以既有 reveal.js 單檔為底，套用講者在 PPTX 手改的文字、加第二張 QR、
+fragment／auto-animate／3D 翻卡／GSAP 逐字／Three.js 封面粒子／卡片牆飛入／Spotlight／內嵌測驗／計時條／lightbox，
+升級 reveal.js 5.2.1，輸出離線單檔。
 用法：python3 pptx-edits-back-to-html.py <stripped.html> <imgs.json> <libs-dir> <out.html>
-  stripped.html／imgs.json：先把原 HTML 的 base64 圖片換成 __IMGn__ 占位符（見 README「實例」段）
-  libs-dir：npm install reveal.js@5 gsap 的目錄
+  stripped.html／imgs.json：先把原 HTML 的 base64 圖片換成 __IMGn__ 占位符（見 examples/README.md）
+  libs-dir：npm install reveal.js@5 gsap three esbuild 的目錄，並先用 esbuild 打包 three-particles.min.js（見 README）
 這支腳本綁定作者那份簡報的字串，直接跑不會成功；它的價值是示範每一種技巧怎麼用正則安全地套進既有 HTML。
 內嵌的五題超音波測驗是示例題目、未經審查，勿直接教學使用。
+"""AI提升教學能力 v2：以 deliverables/workshop-html/index.html 為底，套用使用者 PPTX 修改、repo QR、
+fragment／auto-animate／3D 翻卡／GSAP／內嵌測驗／計時條／lightbox，升級 reveal.js 5.2.1，輸出離線單檔。
+用法：python3 build-v2.py <stripped.html> <imgs.json> <libs-dir> <out.html>
 """
 
 import io
@@ -23,6 +26,10 @@ imgs = json.load(open(IMGS))["imgs"]
 
 def rd(p):
     return open(f"{LIBS}/node_modules/{p}", encoding="utf8").read()
+
+
+def rd_lib(p):
+    return open(f"{LIBS}/{p}", encoding="utf8").read()
 
 
 def strip_import(css):
@@ -404,6 +411,62 @@ s = (
     else s
 )
 
+
+# ───────── 7b. 卡片牆（第 17 頁）、技巧對照頁、資源頁 QR 換成 htmlpptskill ─────────
+rep(
+    '<div class="domains"><div class="root">sportsmedicine.tw</div><div class="subs">',
+    '<div class="domains wall fragment custom"><div class="root">sportsmedicine.tw</div><div class="subs">',
+)
+TECH = [
+    ("Three.js 3D 粒子", "第 1 頁封面", "滑鼠移動有視差；只在封面跑"),
+    ("GSAP 逐字浮現", "第 1、55 頁", "標題一字一字彈出"),
+    ("逐步出現（fragment）", "第 4、7、24、50、51、52 頁", "按一下出一項"),
+    ("章節 zoom 轉場", "所有章節頁", "其餘維持 slide"),
+    ("Auto-Animate", "第 8 → 9 頁", "Lv0 卡片滑到左邊長出階梯"),
+    ("頁內可作答的測驗", "第 11 頁", "5 題、即時回饋、計分"),
+    ("卡片牆飛入", "第 19 頁", "12 個子網域從深處飛到定位"),
+    ("3D 翻卡", "第 25 頁", "七張一次翻，點單張可翻回"),
+    ("點圖放大（lightbox）", "所有截圖頁", "點一下放大，Esc 關閉"),
+    ("Spotlight 聚光燈", "全場，按 X", "示範：第 14、46 頁"),
+    ("講者計時條", "全場，按 T 重計", "40 分鐘，超時變紅"),
+    ("QR 逐張驗證・離線單檔", "全部", "QA 腳本解碼比對；拔網路照播"),
+]
+cards = "".join(
+    f'<div class="card techcard"><div class="t">{a}</div><div class="pg">{b}</div><div class="d">{c}</div></div>'
+    for a, b, c in TECH
+)
+tech_page = (
+    '<section><div class="chip amber">這份簡報本身就是示範</div><h2>用了哪些技巧，在哪幾頁</h2>\n'
+    f'      <div class="grid g3 techgrid">{cards}</div>\n'
+    '      <div class="note">全部做法都在下一頁的 <b>htmlpptskill</b> repo：兩個 skill、腳本、範本，Claude Code／Codex／Gemini／Grok 都能裝。</div>\n'
+    '      <aside class="notes">這一頁本身是講義：講完可以回頭翻。重點不是特效多，而是每一個都有 QA 開關，截圖與 PDF 仍是最終狀態。</aside></section>'
+)
+rep(
+    '    <section><div class="chip">收尾</div><h2>資源</h2>',
+    "    " + tech_page + '\n\n    <section><div class="chip">收尾</div><h2>資源</h2>',
+)
+REPO = "https://github.com/keanu77/htmlpptskill"
+s, n = re.subn(
+    r'<div class="card center"><div class="t" style="color:var\(--teal\)">影像學習站</div><div class="qrcard s"[^>]*>.*?<div class="qrl">從這裡開始逛</div></div></div>',
+    f'<div class="card center"><div class="t" style="color:var(--teal)">HTML 簡報 skill</div><div class="qrcard s" data-url="{REPO}">{qr_svg(REPO)}<div class="qrl">keanu77/htmlpptskill</div></div></div>',
+    s,
+    flags=re.S,
+)
+assert n == 1, n
+# 第 3 頁（開場問題）與封底的 QR 補 data-url
+s, n = re.subn(
+    r'<div class="qrcard m">(?=<svg class="qrsvg" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35">)',
+    '<div class="qrcard m" data-url="https://classlido.sportsmedicine.tw/live/join">',
+    s,
+)
+assert n == 1, ("p3 qr", n)
+s, n = re.subn(
+    r'<div class="qrcard m">(?=<svg class="qrsvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27")',
+    '<div class="qrcard m" data-url="https://sportsmedicine.tw">',
+    s,
+)
+assert n == 1, ("closing qr", n)
+
 # ───────── 8. CSS ─────────
 EXTRA_CSS = r"""
 /* ===== v2：效果與互動 ===== */
@@ -447,6 +510,26 @@ EXTRA_CSS = r"""
 .reveal h1 .ch, .reveal h1 .ch { display: inline-block; }
 @media print { .timebar { display: none; } }
 html.static .flip .inner, html.static .reveal .fragment { transition: none !important; }
+/* 卡片牆飛入（第 17 頁）：容器是 custom fragment，點一下 12 張子網域從深處飛到定位 */
+.domains.wall { perspective: 1200px; }
+.domains.wall .subs { transform-style: preserve-3d; }
+.domains.wall .subs span { opacity: 0; transform: translateZ(-700px) translateX(260px) rotateY(50deg); transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .5s; }
+.domains.wall.visible .subs span { opacity: 1; transform: none; }
+.domains.wall .subs span:nth-child(1){transition-delay:0s}.domains.wall .subs span:nth-child(2){transition-delay:.06s}.domains.wall .subs span:nth-child(3){transition-delay:.12s}.domains.wall .subs span:nth-child(4){transition-delay:.18s}
+.domains.wall .subs span:nth-child(5){transition-delay:.24s}.domains.wall .subs span:nth-child(6){transition-delay:.3s}.domains.wall .subs span:nth-child(7){transition-delay:.36s}.domains.wall .subs span:nth-child(8){transition-delay:.42s}
+.domains.wall .subs span:nth-child(9){transition-delay:.48s}.domains.wall .subs span:nth-child(10){transition-delay:.54s}.domains.wall .subs span:nth-child(11){transition-delay:.6s}.domains.wall .subs span:nth-child(12){transition-delay:.66s}
+.domains.wall .root { transition: box-shadow .6s .9s, transform .6s .9s; }
+.domains.wall.visible .root { box-shadow: 0 0 46px rgba(242,184,75,.55); transform: scale(1.04); }
+html.static .domains.wall .subs span, html.static .domains.wall .root { transition: none !important; }
+/* Spotlight：按 X 切換，滑鼠周圍亮、其餘變暗 */
+.spot { position: fixed; inset: 0; z-index: 60; pointer-events: none; display: none; }
+.spot.on { display: block; }
+/* 技巧對照頁 */
+.techgrid { gap: 12px; margin-top: 0.2em; }
+.techcard { padding: 14px 16px; }
+.techcard .t { font-size: 0.6em; margin-bottom: 4px; color: var(--teal); }
+.techcard .pg { font-size: 0.5em; font-weight: 700; color: var(--amber); }
+.techcard .d { font-size: 0.46em; margin-top: 4px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
 """
 rep("</style>\n</head>", EXTRA_CSS + "</style>\n</head>")
@@ -458,6 +541,7 @@ s = s[:tail_start]
 scripts = f"""<script>{rd('reveal.js/dist/reveal.js')}</script>
 <script>{rd('reveal.js/plugin/notes/notes.js')}</script>
 <script>{rd('gsap/dist/gsap.min.js')}</script>
+<script>{rd_lib('three-particles.min.js')}</script>
 <script>
 var REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 var STATIC = navigator.webdriver || location.search.indexOf('print-pdf') >= 0;  // QA 截圖／列印時不跑動畫
@@ -493,6 +577,28 @@ document.querySelectorAll('.flip').forEach(function(c){{ c.addEventListener('cli
 (function(){{ if(STATIC) return; var ALLOT=40*60*1000, bar=document.createElement('div'); bar.className='timebar'; bar.title='40 分鐘計時，按 T 重新開始'; document.body.appendChild(bar);
   var start=Date.now(); function tick(){{ var p=Math.min(1,(Date.now()-start)/ALLOT); bar.style.width=(p*100)+'%'; bar.classList.toggle('over',p>=1); }}
   setInterval(tick,1000); tick(); document.addEventListener('keydown',function(e){{ if((e.key==='t'||e.key==='T')&&!e.metaKey&&!e.ctrlKey){{ start=Date.now(); tick(); }} }}); }})();
+// ── 封面 Three.js 粒子：疊在第 1 頁背景上，只在封面跑 render loop ──
+(function(){{
+  if (STATIC || REDUCE || !window.initCoverParticles) return;
+  var fx = null;
+  function ensure(){{ if (fx) return fx; var bg = Reveal.getSlideBackground(0); if (!bg) return null; bg.style.overflow = 'hidden'; fx = window.initCoverParticles(bg, {{ count: 1600 }}); return fx; }}
+  function sync(){{ var on = Reveal.getIndices().h === 0; var f = ensure(); if (!f) return; on ? f.start() : f.stop(); }}
+  Reveal.on('ready', sync); Reveal.on('slidechanged', sync); Reveal.on('resize', function(){{ if (fx) fx.resize(); }});
+}})();
+// ── Spotlight：按 X 切換聚光燈 ──
+(function(){{
+  if (STATIC) return;
+  var c = document.createElement('canvas'); c.className = 'spot'; document.body.appendChild(c); var ctx = c.getContext('2d');
+  var on = false, x = innerWidth / 2, y = innerHeight / 2, R = 150;
+  function draw(){{ if (!on) return; c.width = innerWidth; c.height = innerHeight; ctx.clearRect(0, 0, c.width, c.height);
+    ctx.fillStyle = 'rgba(0,0,0,0.78)'; ctx.fillRect(0, 0, c.width, c.height);
+    var g = ctx.createRadialGradient(x, y, R * 0.55, x, y, R); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill(); ctx.globalCompositeOperation = 'source-over'; }}
+  addEventListener('mousemove', function(e){{ x = e.clientX; y = e.clientY; if (on) requestAnimationFrame(draw); }}, {{ passive: true }});
+  addEventListener('wheel', function(e){{ if (on) {{ R = Math.max(60, Math.min(400, R - e.deltaY * 0.3)); draw(); }} }}, {{ passive: true }});
+  document.addEventListener('keydown', function(e){{ if ((e.key === 'x' || e.key === 'X') && !e.metaKey && !e.ctrlKey && e.target.tagName !== 'INPUT') {{ on = !on; c.classList.toggle('on', on); draw(); }} }});
+  window.__spot = function(){{ return on; }};
+}})();
 // ── 內嵌測驗 ──
 (function(){{
   var Q={QUIZ_JSON}; var box=document.getElementById('quiz1'); if(!box) return; var i=0, score=0;

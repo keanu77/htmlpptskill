@@ -143,7 +143,8 @@ gsap.to(o, { v: 13, duration: 1.2, onUpdate: () => (el.textContent = Math.round(
 Reveal.on('slidechanged', (e) => (running = e.currentSlide.id === 'cover'));
 ```
 - 適合：封面粒子星空、旋轉地球、可轉動的解剖模型。
-- 會讓 HTML 增加數百 KB，務必在播放電腦上測試幀率。
+- 會讓 HTML 增加數百 KB（esbuild 打包只用到的模組約 530 KB），務必在播放電腦上測試幀率。
+- 可直接用的封面粒子模組：repo `examples/three-particles-entry.js`（掛在 `Reveal.getSlideBackground(0)`，只在封面跑）。
 
 ### impress.js（整份變成 3D 畫布，類似 Prezi）
 - 每頁用 `data-x`、`data-y`、`data-z`、`data-rotate-y`、`data-scale` 定位，頁與頁之間鏡頭飛行。
