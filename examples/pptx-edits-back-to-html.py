@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """實例（作者的 55 頁工作坊 v2）：以既有 reveal.js 單檔為底，套用講者在 PPTX 手改的文字、加第二張 QR、
 fragment／auto-animate／3D 翻卡／GSAP 逐字／Three.js 封面粒子／卡片牆飛入／Spotlight／內嵌測驗／計時條／lightbox，
 升級 reveal.js 5.2.1，輸出離線單檔。
@@ -6,9 +7,6 @@ fragment／auto-animate／3D 翻卡／GSAP 逐字／Three.js 封面粒子／卡�
   libs-dir：npm install reveal.js@5 gsap three esbuild 的目錄，並先用 esbuild 打包 three-particles.min.js（見 README）
 這支腳本綁定作者那份簡報的字串，直接跑不會成功；它的價值是示範每一種技巧怎麼用正則安全地套進既有 HTML。
 內嵌的五題超音波測驗是示例題目、未經審查，勿直接教學使用。
-"""AI提升教學能力 v2：以 deliverables/workshop-html/index.html 為底，套用使用者 PPTX 修改、repo QR、
-fragment／auto-animate／3D 翻卡／GSAP／內嵌測驗／計時條／lightbox，升級 reveal.js 5.2.1，輸出離線單檔。
-用法：python3 build-v2.py <stripped.html> <imgs.json> <libs-dir> <out.html>
 """
 
 import io
