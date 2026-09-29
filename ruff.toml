@@ -1,0 +1,5 @@
+# 與 CI 一致的規則集（避免 ruff 新版預設規則變動讓 CI 隨機變紅）
+line-length = 200
+[lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]
