@@ -18,7 +18,7 @@
 ```bash
 git clone https://github.com/keanu77/htmlpptskill.git
 cd htmlpptskill
-./install.sh            # 偵測到哪個 CLI 就裝到它的使用者層級 skills 目錄；既有同名目錄先備份
+./install.sh            # 偵測到哪個 CLI 就裝到它的使用者層級 skills 目錄；既有同名目錄先搬到 skills-backup/
 ./install.sh codex      # 只裝給某一家：claude | codex | gemini | grok
 ./install.sh --project  # 裝到目前專案的 .agents/skills/（Gemini、Grok、Codex 都會掃，可跟專案一起 commit）
 ```

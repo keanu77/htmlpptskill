@@ -3,7 +3,7 @@
 # 用法：./install.sh [claude|codex|gemini|grok|all] [--project] [--force]
 #   預設 all：偵測到哪個 CLI（指令在 PATH 或 ~/.<cli>/ 存在）就裝到它的使用者層級目錄
 #   --project：改裝到目前目錄的 .agents/skills/（Gemini、Grok、Codex 都會掃；跟著專案一起 commit）
-#   --force：目標已存在時直接覆蓋；否則先備份成 <name>.bak-<時間>
+#   --force：目標已存在時直接覆蓋；否則先搬到 <cli 目錄>/skills-backup/<name>.bak-<時間>
 # 各 CLI 的使用者層級 skill 目錄：
 #   Claude Code  ~/.claude/skills/        Codex CLI  ~/.codex/skills/
 #   Gemini CLI   ~/.gemini/skills/        Grok Build ~/.grok/skills/（也會讀 ~/.claude/skills/）
@@ -20,7 +20,7 @@ install_to() {  # $1 = 目的目錄
   for s in "${SKILLS[@]}"; do
     if [ -d "$dest/$s" ]; then
       if [ $FORCE -eq 1 ]; then rm -rf "$dest/$s"
-      else mv "$dest/$s" "$dest/$s.bak-$(date +%Y%m%d%H%M%S)"; echo "  既有 $dest/$s 已備份成 .bak-*（用 --force 直接覆蓋）"; fi
+      else mkdir -p "$dest/../skills-backup"; mv "$dest/$s" "$dest/../skills-backup/$s.bak-$(date +%Y%m%d%H%M%S)"; echo "  既有 $dest/$s 已移到 $(cd "$dest/.." && pwd)/skills-backup/（放在 skills/ 底下會被當成另一個 skill；用 --force 直接覆蓋）"; fi
     fi
     cp -R "$DIR/skills/$s" "$dest/$s"
   done
