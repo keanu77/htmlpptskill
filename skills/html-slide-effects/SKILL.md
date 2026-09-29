@@ -1,6 +1,6 @@
 ---
 name: html-slide-effects
-description: 為 reveal.js HTML 簡報加入進階技巧：逐步出現、Auto-Animate、3D 轉場、GSAP、Three.js、標註、計時條、手機捲動模式，並控管效能與離線。
+description: 為既有的 reveal.js HTML 簡報加入效果：逐步出現（fragment）、Auto-Animate、3D 翻卡、GSAP 逐字動畫、Three.js、計時條、點圖放大、手機捲動模式，並控管效能、減少動態效果與離線。當使用者說「加動畫」「加特效」「逐步出現」「卡片翻面」「Auto-Animate」「GSAP」「讓簡報更生動」「有什麼效果可以加」時使用；簡報本體用 html-slide-deck 做，加完效果回去重跑它的 QA。
 ---
 
 # HTML 簡報進階技巧（reveal.js）
@@ -62,7 +62,7 @@ description: 為 reveal.js HTML 簡報加入進階技巧：逐步出現、Auto-A
 - `scrollActivationWidth` 控制手機是否自動切換；設 `null` 或 `0` 則關閉。
 - 用途：部署後在封面放 QR，聽眾用手機跟著看、會後帶走。
 
-### 點圖放大（Lightbox，5.2 起）
+### 點圖放大（Lightbox，5.2 起；html-slide-deck 範本已是 5.2）
 ```html
 <img src="shot.png" data-preview-image>
 <video data-preview-video="demo.mp4"></video>
@@ -85,11 +85,11 @@ description: 為 reveal.js HTML 簡報加入進階技巧：逐步出現、Auto-A
 | 外掛 | 用途 | 注意 |
 |---|---|---|
 | elapsed-time-bar（tkrkt） | 底部時間進度條，和頁數進度條對照，看出講快還是講慢 | 設 `allottedTime`（毫秒），可暫停、重設 |
-| Chalkboard（rajgoel） | `C` 在投影片上畫、`B` 開黑板、`D` 下載畫記 | 需要 Font Awesome，要一起內嵌才能離線 |
+| Chalkboard（rajgoel） | `C` 在投影片上畫、`B` 開黑板、`D` 下載畫記 | 需要 Font Awesome（自有授權），要一起內嵌才能離線；`B` 與 reveal 內建黑屏鍵衝突，要改鍵 |
 | Spotlight（denniskniep） | 滑鼠變聚光燈，其他區域變暗 | 講解截圖細節時很有效 |
 | reveal.js-menu | 側邊目錄快速跳頁 | Q&A 時找頁面方便 |
 
-內嵌方式：把外掛的 JS 與 CSS 讀進建置腳本，直接寫進 `<script>` 與 `<style>`，並加入 `plugins: [...]`。
+內嵌方式：把外掛的 JS 與 CSS 讀進建置腳本，直接寫進 `<script>` 與 `<style>`，並加入 `plugins: [...]`。套件名稱與版本以各外掛 repo 為準，**不要猜 npm 名稱**；抓不到就自己寫（計時條約 20 行）。
 
 不建議：需要伺服器的投票或問答外掛（Poll、Seminar、Questions）。現場互動改用使用者自己的課堂互動工具，並準備口頭提問作為沒網路時的備案。
 
@@ -107,9 +107,13 @@ description: 為 reveal.js HTML 簡報加入進階技巧：逐步出現、Auto-A
 .flip .back { transform: rotateY(180deg); }
 ```
 ```html
-<div class="flip fragment"><div class="inner"><div class="front">工具名稱</div><div class="back">教學用法</div></div></div>
+<div class="flip fragment custom"><div class="inner"><div class="front">工具名稱</div><div class="back">教學用法</div></div></div>
 ```
-（fragment 顯示時會加上 `visible` class，所以按一下就翻面。）
+```css
+.reveal .fragment.custom { opacity: 1; visibility: inherit; }   /* 沒有 custom 時，卡片在點擊前是隱形的，正面看不到 */
+.flip.visible .inner { transform: rotateY(180deg); }
+```
+（fragment 顯示時加上 `visible` class → 翻面；一組卡片想一次翻，把 `fragment custom` 放在容器上，卡片用 `transition-delay` 錯開。）
 
 立體階梯：父層 `perspective: 1200px`，每一階 `transform: rotateX(20deg) translateZ(n*40px)`，每階加 `fragment` 依序升起。
 
@@ -166,10 +170,17 @@ Reveal.on('slidechanged', (e) => (running = e.currentSlide.id === 'cover'));
 }
 ```
 ```js
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-Reveal.initialize({ transition: reduce ? 'fade' : 'slide' /* ... */ });
-if (reduce) { /* 不啟動 GSAP 與 Three.js，直接顯示最終狀態 */ }
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// STATIC：QA 截圖（Playwright）與 ?print-pdf 時關掉所有動畫，截到的才是最終狀態
+const STATIC = navigator.webdriver || location.search.indexOf('print-pdf') >= 0;
+if (STATIC) document.documentElement.classList.add('static');
+Reveal.initialize({ transition: REDUCE ? 'fade' : 'slide', autoAnimateDuration: STATIC ? 0 : 0.9, pdfSeparateFragments: false /* ... */ });
+if (REDUCE || STATIC) { /* 不啟動 GSAP 與 Three.js、計時條，直接顯示最終狀態 */ }
 ```
+```css
+html.static .flip .inner, html.static .reveal .fragment { transition: none !important; }
+```
+`prefers-reduced-motion` 的 CSS 只作用在自己加的效果（`.flip`、GSAP 目標、fragment），不要用全域 `*` 把 reveal 換頁也壓掉。
 
 ---
 
@@ -199,7 +210,7 @@ if (reduce) { /* 不啟動 GSAP 與 Three.js，直接顯示最終狀態 */ }
 - 內嵌 GSAP／外掛時，插入位置要在 reveal.js 之後、`Reveal.initialize` 之前；找**最後一個** `</body>`（notes.js 原始碼裡也有一個）。
 - 加了 `elapsed-time-bar` 之類的外掛後，`qa-screenshots.mjs` 的 `errors` 若出現外掛的 console error 要先修，再看版面。
 
-## 參考來源
+## 參考來源（2026-09 查閱）
 - https://revealjs.com/auto-animate/
 - https://revealjs.com/transitions/
 - https://revealjs.com/scroll-view/

@@ -3,17 +3,17 @@
   reveal.js 簡報模板（html-slide-deck skill）
   - 預設從 jsDelivr CDN 載入 reveal.js 5.1.0 與 Google Fonts；會場沒網路時，把三個 <link> 與兩個 <script src> 換成內嵌
     （curl 下載後貼進 <style>／<script>；notes.js 原始碼含 </body>，插入時找「最後一個」</body>），單檔約多 300 KB。
-  - 圖片：images/*.jpg 為相對路徑；交付單檔時轉 base64 嵌入（見 SKILL.md §1）。
+  - 圖片：範本內建占位（CSS 漸層底圖、SVG 假截圖），每處都有 data-bg-todo／data-src-todo 註明要換成哪個檔；換好後跑 scripts/inline-assets.mjs 內嵌。
   - 範例頁依需求複製／刪除；class 說明見 SKILL.md §1。
 -->
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>三個平台，各管一件事｜GitHub・Cloudflare・Zeabur 零基礎教學</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css" />
+  <title>〈簡報標題〉</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/night.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
   <style>
@@ -130,16 +130,16 @@
 
     <!-- ===== 範例頁（依需求複製／刪除）===== -->
     <!-- 範例 1 封面（底圖＋半透明卡） -->
-    <section data-background-image="images/bg-cover.jpg" data-background-size="cover" data-background-opacity="0.9">
+    <section data-background-gradient="radial-gradient(ellipse at 75% 40%, #1A3E4C 0, #0B1F2A 60%)" data-bg-todo="換成底圖：data-background-image=\"images/bg-cover.jpg\" data-background-size=\"cover\" data-background-opacity=\"0.9\"">
       <div class="side"></div>
       <div style="padding:26px 34px; margin-left:-4px; max-width:760px; background:rgba(11,31,42,0.62); border-radius:18px; backdrop-filter:blur(2px);">
-        <div class="chip amber">附錄・零基礎版・不計入 40 分鐘</div>
+        <div class="chip amber">〈場合／副標籤〉</div>
         <h1>三個平台，各管一件事</h1>
         <p class="lead" style="font-size:0.8em;">寫好的東西放哪裡、網站怎麼給人看、程式在哪裡跑。<br>GitHub・Cloudflare・Zeabur，給沒用過的人。</p>
         <p style="font-size:0.6em;color:var(--teal);font-weight:700;margin-top:1.6em;">講者姓名・單位</p>
-        <p style="font-size:0.45em;color:var(--dim);">所有例子都來自本專案與四個 EBM 工具的實際部署紀錄（2026-09）</p>
+        <p style="font-size:0.45em;color:var(--dim);">〈一行補充：來源、日期〉</p>
       </div>
-      <aside class="notes">這是附錄，不在 40 分鐘之內。對象是完全沒碰過這三個平台的人，所以全篇不出現終端機指令，只講「它是什麼、你會看到什麼、第一次怎麼用」，最後才放我自己的習慣。想進一步的人，指令都寫在各頁備註。</aside>
+      <aside class="notes">〈開場備註：對象、範圍、怎麼用這份簡報〉</aside>
     </section>
 
     <!-- 範例 2 三卡並排（grid g3＋icon） -->
@@ -171,7 +171,7 @@
     </section>
 
     <!-- 範例 3 章節頁（chapter＋底圖） -->
-    <section class="chapter" data-background-image="images/bg-github.jpg" data-background-size="cover" data-background-opacity="0.95">
+    <section class="chapter" data-background-gradient="radial-gradient(ellipse at 75% 40%, #1A3E4C 0, #0B1F2A 60%)" data-bg-todo="換成底圖：data-background-image=\"images/bg-github.jpg\" data-background-size=\"cover\" data-background-opacity=\"0.95\"">
       <div class="side"></div>
       <div style="padding-left:30px;">
         <div class="num">A</div>
@@ -221,11 +221,11 @@
       <div style="position:relative;">
         <div class="mock" style="background:#fff;">
           <div class="top"><span class="dot" style="background:#E8846B"></span><span class="dot" style="background:#F2B84B"></span><span class="dot" style="background:#6FCF97"></span>&nbsp; github.com/&lt;帳號&gt;/&lt;repo&gt;/commits（換成你的真實截圖）</div>
-          <img src="images/shot-github-commits-crop.png" alt="GitHub commits 頁面" style="display:block;width:100%;height:auto;margin:0;" />
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDU0MCI+PHJlY3Qgd2lkdGg9IjE0NDAiIGhlaWdodD0iNTQwIiBmaWxsPSIjRTRFQkVGIi8+PHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iMTM5MiIgaGVpZ2h0PSI0OTIiIHJ4PSIxNiIgZmlsbD0iI0Y3RkFGQiIgc3Ryb2tlPSIjQzlENkRDIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1kYXNoYXJyYXk9IjE0IDEwIi8+PHRleHQgeD0iNTAlIiB5PSI1MiUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjU5IiBmaWxsPSIjN0E4Qzk1Ij7jgIjnnJ/lr6bmiKrlnJbvvJpjb21taXRzIOmggeOAiTwvdGV4dD48L3N2Zz4=" data-src-todo="images/shot-github-commits-crop.png" alt="GitHub commits 頁面" style="display:block;width:100%;height:auto;margin:0;" />
         </div>
         <div class="callout" style="left:34%;top:46px;">Public＝公開；私人會寫 Private</div>
         <div class="callout" style="left:54%;top:228px;">每一格＝一次存檔＋一句「改了什麼」</div>
-        <div class="callout" style="left:34%;bottom:-14px;">綠勾＝自動檢查通過，紅叉＝有一項沒過</div>
+        <div class="callout" style="left:34%;bottom:10px;">綠勾＝自動檢查通過，紅叉＝有一項沒過</div>
       </div>
       <aside class="notes">這是反向搜尋策略產生器（公開倉庫）的修改紀錄頁真實畫面。每一格是一次存檔加一句說明：fix 開頭是修錯、refactor 是整理。右邊 5/5 綠勾代表五項自動檢查全過，4/5 紅叉代表有一項沒過，那次是還沒把建置工具裝進正式環境。看懂這一頁，就看得懂九成的 GitHub 頁面。</aside>
     </section>
@@ -259,45 +259,44 @@
         <div>
           <div class="mock" style="background:#fff;">
             <div class="top"><span class="dot" style="background:#E8846B"></span><span class="dot" style="background:#F2B84B"></span><span class="dot" style="background:#6FCF97"></span>&nbsp; your-site.pages.dev</div>
-            <img src="images/shot-site-home-small.png" alt="本站首頁" style="display:block;width:100%;height:auto;margin:0;" />
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDkwMCI+PHJlY3Qgd2lkdGg9IjE0NDAiIGhlaWdodD0iOTAwIiBmaWxsPSIjRTRFQkVGIi8+PHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iMTM5MiIgaGVpZ2h0PSI4NTIiIHJ4PSIxNiIgZmlsbD0iI0Y3RkFGQiIgc3Ryb2tlPSIjQzlENkRDIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1kYXNoYXJyYXk9IjE0IDEwIi8+PHRleHQgeD0iNTAlIiB5PSI1MiUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9Ijk5IiBmaWxsPSIjN0E4Qzk1Ij7jgIjnnJ/lr6bmiKrlnJbvvJrntrLnq5npppbpoIHjgIk8L3RleHQ+PC9zdmc+" data-src-todo="images/shot-site-home-small.png" alt="本站首頁" style="display:block;width:100%;height:auto;margin:0;" />
           </div>
-          <div class="hint" style="margin-top:8px;">本站首頁，放在 Cloudflare Pages（2026-09-28）</div>
+          <div class="hint" style="margin-top:8px;">〈截圖說明與日期〉</div>
         </div>
       </div>
       <div class="note"><b>什麼是「靜態網頁」？</b>打開就是固定內容的頁面：教案、講義、工具說明。不需要登入、不需要每次現算的，都算。</div>
       <aside class="notes">靜態網頁就是「檔案本身就是網頁」，例如這份 HTML 簡報。需要登入、需要 AI 計算的工具不是靜態，那些去 Zeabur。分清這一點，就知道東西該放哪。</aside>
     </section>
 
-    <!-- 範例 8 Classlido 互動頁：QR＋六位數代碼（.cl-code 以 localStorage 跨頁同步）＋主持畫面新分頁。不能 iframe。 -->
-    <section id="slide-classlido-live">
+    <!-- 範例 8 課堂互動頁（以 example.com 占位，換成你的平台）：QR＋六位數代碼（.cl-code 以 localStorage 跨頁同步）＋主持畫面新分頁。不能 iframe。 -->
+    <section id="slide-live">
       <div class="chip amber">互動模式・現在試試看</div>
       <h2>掃碼加入，一起答一題</h2>
       <div class="grid" style="grid-template-columns:300px 1fr 300px;align-items:center;gap:34px;">
-        <div class="qrcard" data-url="https://classlido.sportsmedicine.tw/live/join"><!-- data-url 讓 qa-screenshots 解碼比對 -->
-          <!-- 換成 segno 產生的 SVG：save(buf, kind='svg', xmldecl=False, svgclass=None, lineclass=None, omitsize=True) -->
-          <svg class="qrsvg" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35"><path fill="#fff" d="M0 0h35v35h-35z"/><path stroke="#0b1f2a" d="M1 1.5h7m1 0h2m1 0h2m1 0h4m1 0h2m2 0h1m2 0h7m-33 1h1m5 0h1m7 0h2m1 0h1m2 0h3m3 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h1m2 0h1m3 0h4m1 0h2m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m2 0h4m1 0h2m2 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m4 0h1m3 0h3m2 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h1m3 0h3m1 0h3m1 0h3m3 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-24 1h5m1 0h1m2 0h1m2 0h1m1 0h1m-23 1h7m1 0h2m2 0h1m3 0h1m1 0h1m2 0h2m3 0h2m3 0h1m-33 1h1m1 0h1m4 0h1m4 0h2m1 0h1m3 0h2m2 0h1m2 0h2m1 0h2m1 0h1m-33 1h1m5 0h2m1 0h2m1 0h2m1 0h1m2 0h1m2 0h1m3 0h2m1 0h1m1 0h2m-31 1h1m2 0h2m2 0h2m1 0h1m3 0h2m1 0h1m2 0h4m1 0h1m1 0h4m-31 1h2m2 0h2m1 0h2m2 0h1m5 0h1m3 0h1m1 0h2m1 0h3m1 0h2m-33 1h1m3 0h1m4 0h1m1 0h2m2 0h1m2 0h3m1 0h3m1 0h1m2 0h4m-33 1h2m1 0h1m1 0h2m1 0h1m2 0h2m1 0h1m2 0h1m2 0h2m3 0h2m2 0h3m-32 1h2m6 0h2m5 0h2m2 0h5m1 0h6m-31 1h3m2 0h3m1 0h1m1 0h2m1 0h1m3 0h3m1 0h1m2 0h1m1 0h2m3 0h1m-32 1h1m2 0h1m2 0h3m2 0h1m2 0h2m2 0h3m1 0h1m2 0h2m1 0h2m1 0h1m-31 1h2m1 0h2m1 0h5m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m1 0h2m-32 1h5m2 0h1m1 0h3m4 0h4m1 0h1m2 0h2m1 0h6m-32 1h2m3 0h3m2 0h2m1 0h1m1 0h3m3 0h1m4 0h3m-30 1h2m1 0h3m3 0h1m1 0h2m6 0h3m1 0h1m2 0h1m2 0h2m1 0h1m-33 1h1m1 0h2m2 0h1m1 0h1m2 0h1m1 0h1m1 0h3m3 0h2m1 0h1m3 0h1m1 0h2m-32 1h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m1 0h1m3 0h3m1 0h3m-32 1h1m1 0h1m1 0h1m1 0h1m1 0h4m1 0h3m1 0h1m1 0h2m1 0h1m1 0h5m2 0h2m-25 1h1m1 0h2m1 0h1m1 0h1m3 0h3m2 0h1m3 0h1m1 0h3m-33 1h7m1 0h2m1 0h3m7 0h4m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h4m4 0h9m3 0h3m-31 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m3 0h1m1 0h1m4 0h6m1 0h1m-32 1h1m1 0h3m1 0h1m1 0h1m1 0h2m5 0h4m3 0h2m2 0h1m3 0h1m-33 1h1m1 0h3m1 0h1m1 0h3m4 0h1m2 0h1m1 0h1m1 0h2m2 0h2m1 0h2m-31 1h1m5 0h1m1 0h3m3 0h2m2 0h6m1 0h2m1 0h3m-31 1h7m5 0h1m2 0h2m1 0h2m3 0h2m1 0h2m3 0h1"/></svg>
-          <div class="qrl">classlido.sportsmedicine.tw/live/join</div>
+        <div class="qrcard" data-url="https://example.com/replace-me"><!-- 換成你的加入頁 QR（segno）；data-url 讓 QA 解碼比對 -->
+          <svg class="qrsvg" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31"><path fill="#fff" d="M0 0h31v31h-31z"/><path stroke="#0b1f2a" d="M1 1.5h7m2 0h2m4 0h2m1 0h1m1 0h1m1 0h7m-29 1h1m5 0h1m2 0h6m1 0h1m1 0h2m2 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m1 0h2m1 0h4m1 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m4 0h2m1 0h3m1 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m2 0h2m2 0h2m3 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h2m1 0h1m1 0h1m2 0h1m2 0h2m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h1m1 0h5m1 0h2m-18 1h1m2 0h1m1 0h1m1 0h1m2 0h2m4 0h1m2 0h2m1 0h2m1 0h1m-25 1h2m1 0h1m2 0h1m1 0h5m1 0h3m2 0h4m2 0h2m-29 1h2m4 0h3m2 0h1m3 0h1m1 0h2m1 0h2m3 0h2m1 0h1m-29 1h5m3 0h2m3 0h7m1 0h1m3 0h1m1 0h2m-29 1h1m2 0h5m3 0h1m4 0h2m1 0h1m3 0h1m1 0h1m2 0h1m-29 1h3m2 0h1m1 0h1m3 0h2m4 0h1m4 0h1m1 0h1m1 0h1m1 0h1m-29 1h2m1 0h2m1 0h1m6 0h1m1 0h4m1 0h3m1 0h1m3 0h1m-29 1h3m1 0h2m2 0h2m1 0h1m2 0h2m1 0h2m1 0h4m1 0h1m-24 1h1m1 0h5m1 0h1m1 0h1m2 0h1m1 0h1m1 0h3m-22 1h1m2 0h1m5 0h1m1 0h1m1 0h1m2 0h1m1 0h1m3 0h3m3 0h1m-25 1h1m1 0h3m2 0h1m1 0h2m1 0h2m2 0h1m2 0h3m2 0h1m-27 1h2m3 0h2m2 0h1m1 0h2m2 0h1m5 0h1m3 0h1m-28 1h3m2 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h7m1 0h2m-21 1h1m2 0h2m1 0h2m2 0h3m3 0h1m1 0h1m1 0h1m-29 1h7m5 0h1m2 0h1m1 0h4m1 0h1m1 0h1m3 0h1m-29 1h1m5 0h1m4 0h3m1 0h1m1 0h4m3 0h2m1 0h1m-28 1h1m1 0h3m1 0h1m1 0h2m1 0h1m6 0h7m2 0h2m-29 1h1m1 0h3m1 0h1m2 0h1m2 0h3m2 0h2m4 0h1m3 0h1m-28 1h1m1 0h3m1 0h1m2 0h1m1 0h2m2 0h7m3 0h4m-29 1h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h4m2 0h1m2 0h1m1 0h1m1 0h2m-29 1h7m2 0h1m1 0h1m1 0h1m3 0h1m2 0h1m3 0h1m2 0h1"/></svg>
+          <div class="qrl">example.com/replace-me</div>
         </div>
         <div style="text-align:center;">
           <div style="font-size:0.55em;color:var(--muted);margin-bottom:6px;">輸入場次代碼</div>
           <div class="cl-code" style="font-family:Menlo,monospace;font-size:2.6em;font-weight:900;letter-spacing:0.18em;color:var(--amber);line-height:1.1;">——————</div>
           <div style="margin-top:14px;font-size:0.5em;color:var(--dim);">講者：開課後把代碼填在下面，全部頁面同步更新</div>
           <input class="cl-code-input" maxlength="6" placeholder="六位數代碼" />
-          <div style="margin-top:14px;"><a class="btn" href="https://classlido.sportsmedicine.tw/quick" target="_blank" rel="noopener">開啟主持畫面（新分頁）↗</a></div>
+          <div style="margin-top:14px;"><a class="btn" href="https://example.com/host" target="_blank" rel="noopener">開啟主持畫面（新分頁）↗</a></div>
         </div>
         <div>
           <div class="mock" style="background:#fff;max-width:300px;margin:0 auto;">
             <div class="top"><span class="dot" style="background:#E8846B"></span><span class="dot" style="background:#F2B84B"></span><span class="dot" style="background:#6FCF97"></span>&nbsp; 學生手機端</div>
-            <img src="images/shot-classlido-student.jpg" alt="學生手機端" style="display:block;width:100%;height:300px;object-fit:cover;object-position:top;margin:0;" />
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgOTAwIj48cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjkwMCIgZmlsbD0iI0U0RUJFRiIvPjxyZWN0IHg9IjI0IiB5PSIyNCIgd2lkdGg9IjU1MiIgaGVpZ2h0PSI4NTIiIHJ4PSIxNiIgZmlsbD0iI0Y3RkFGQiIgc3Ryb2tlPSIjQzlENkRDIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1kYXNoYXJyYXk9IjE0IDEwIi8+PHRleHQgeD0iNTAlIiB5PSI1MiUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9Ijk5IiBmaWxsPSIjN0E4Qzk1Ij7jgIjlrbjnlJ/nq6/miKrlnJbjgIk8L3RleHQ+PC9zdmc+" data-src-todo="images/shot-student.jpg" alt="學生手機端" style="display:block;width:100%;height:300px;object-fit:cover;object-position:top;margin:0;" />
           </div>
         </div>
       </div>
       <div class="note" style="margin-top:0.6em;"><b>流程：</b>講者先在新分頁開課拿到代碼 → 在這頁填入 → 聽眾掃左邊 QR、輸入代碼與名字 → 講者按「出題」→ 回到主持畫面看即時結果。</div>
-      <aside class="notes">Classlido 不能嵌進簡報（X-Frame-Options: DENY），主持畫面開在新分頁。沒網路就用學生端截圖說明。開場提問頁可放同一組 QR 與 <span class="cl-code">——</span> 代碼。</aside>
+      <aside class="notes">多數互動平台不能嵌進簡報（X-Frame-Options），主持畫面開在新分頁。沒網路就用學生端截圖說明。開場提問頁可放同一組 QR 與 <span class="cl-code">——</span> 代碼。</aside>
     </section>
 
     <!-- 範例 9 封底 -->
-    <section data-background-image="images/bg-closing.jpg" data-background-size="cover" data-background-opacity="0.85">
+    <section data-background-gradient="radial-gradient(ellipse at 75% 40%, #1A3E4C 0, #0B1F2A 60%)" data-bg-todo="換成底圖：data-background-image=\"images/bg-closing.jpg\" data-background-size=\"cover\" data-background-opacity=\"0.85\"">
       <div class="side"></div>
       <div style="padding-left:30px;">
         <div class="chip amber">今天就能做的一件事</div>
@@ -307,7 +306,7 @@
           <li><b>放一個 index.html 進去（就算只寫一句「你好」）</b><span>5 分鐘</span></li>
           <li><b>到 Cloudflare Pages 拖拉上傳同一個資料夾，拿到網址</b><span>15 分鐘</span></li>
         </ol>
-        <p style="font-size:0.55em;color:var(--muted);margin-top:0.8em;">主簡報：<a href="https://your-site.pages.dev/">your-site.pages.dev</a>・課堂互動：<a href="https://classlido.sportsmedicine.tw/">Classlido</a></p>
+        <p style="font-size:0.55em;color:var(--muted);margin-top:0.8em;">〈相關連結〉</p>
         <p style="font-size:0.6em;color:var(--teal);font-weight:700;">講者姓名・單位</p>
       </div>
       <aside class="notes">收尾只給一個作業：三十分鐘內讓自己的一頁網站上線。做過一次，前面所有名詞都會變成經驗。Zeabur 等真的需要伺服器再說。</aside>
@@ -316,13 +315,13 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
 <script>
   Reveal.initialize({
     width: 1280, height: 720, margin: 0.06,
     hash: true, transition: 'slide', backgroundTransition: 'fade',
-    center: true, progress: true, controls: true, slideNumber: 'c/t',
+    center: true, progress: true, controls: true, slideNumber: 'c/t', pdfSeparateFragments: false,
     plugins: [ RevealNotes ]
   });
   (function () {
@@ -336,9 +335,9 @@
   })();
 </script>
 <script>
-  // Classlido 場次代碼：在 .cl-code-input 輸入一次，所有 .cl-code 跨頁同步（localStorage）。
+  // 互動平台場次代碼：在 .cl-code-input 輸入一次，所有 .cl-code 跨頁同步（localStorage）。
   (function () {
-    var KEY = 'classlido_code';
+    var KEY = 'live_code';
     function render() {
       var v = ''; try { v = localStorage.getItem(KEY) || ''; } catch (e) {}
       document.querySelectorAll('.cl-code').forEach(function (el) { el.textContent = v ? v : (el.textContent.length > 3 ? '——————' : '——'); });

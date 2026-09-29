@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const QR = require('qrcode');
-const { slides, tools, cats } = require('./content.js');
+const { slides, tools = {}, cats = [], meta = {} } = require('./content.js');
 
 const rv = (p) => fs.readFileSync(path.join(__dirname, 'node_modules/reveal.js', p), 'utf8');
 const img = (name) => {
@@ -14,7 +14,8 @@ const img = (name) => {
 };
 // 沒有該圖片就不輸出背景屬性（新專案先不放 assets 也能 build）
 const bgAttr = (name, opacity) => { const src = img(name); return src ? `data-background-image="${src}" data-background-size="cover" data-background-opacity="${opacity}"` : ''; };
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// 注意：content.js 的文字欄位視為可信 HTML（可寫 <b>、<br>）；只有網址與標籤經 esc()。不要把不可信的外部文字直接貼進 content.js。
 const host = (u) => u.replace(/^https?:\/\//, '').replace(/\/$/, '');
 const COLORS = ['teal', 'teal', 'amber', 'coral', 'green', 'teal', 'amber'];
 const HEX = { teal: '#3FC1B7', amber: '#F2B84B', coral: '#E8846B', green: '#6FCF97' };
@@ -25,7 +26,7 @@ async function qr(url) {
   return svg.replace('<svg ', '<svg class="qrsvg" ');
 }
 const qrCard = async (url, label, size = 'm') =>
-  `<div class="qrcard ${size}">${await qr(url)}<div class="qrl">${esc(label || host(url))}</div></div>`;
+  `<div class="qrcard ${size}" data-url="${esc(url)}">${await qr(url)}<div class="qrl">${esc(label || host(url))}</div></div>`;
 
 const dots = `<span class="dot" style="background:#E8846B"></span><span class="dot" style="background:#F2B84B"></span><span class="dot" style="background:#6FCF97"></span>&nbsp; `;
 const mock = (src, url) => !src ? '' : `<div class="mock" style="background:#fff;"><div class="top">${dots}${esc(url)}</div><img src="${src}" alt="${esc(url)}" style="display:block;width:100%;height:auto;margin:0;" /></div>`;
@@ -61,7 +62,7 @@ const R = {
   },
   async section(s) {
     part = `${s.num} ${s.title}`;
-    const bg = { '02': 'bg-github', '04': 'bg-cloudflare' }[s.num];
+    const bg = s.bg || null;  // content.js 指定底圖名稱（assets/<bg>.jpg），沒有就純色
     return `<section class="chapter" ${bg ? bgAttr(bg, 0.95) : ''}>
       <div style="padding-left:30px;"><div class="num">${s.num}</div><h1>${s.title}</h1><p class="sub">${s.sub}</p></div>${notes(s.notes)}</section>`;
   },
@@ -76,7 +77,7 @@ const R = {
     const cs = ['amber', 'amber', 'amber', 'teal', 'teal', 'green'];
     return `<section><div class="chip">${part}</div><h2>${s.title}</h2>
       <div class="flow6">${s.steps.map((st, i) => `${i ? '<div class="arrow">→</div>' : ''}<div class="card center ${cs[i]}"><span class="n">${i + 1}</span><div class="t">${st.h}</div><div class="d">${st.p}</div></div>`).join('')}</div>
-      <div class="brace"><span class="amber">教學設計（你）</span><span class="teal">設定一次，之後自動</span></div>
+      ${s.brace ? `<div class="brace"><span class="amber">${s.brace[0]}</span><span class="teal">${s.brace[1]}</span></div>` : ''}
       <div class="note">${s.foot}</div>${notes(s.notes)}</section>`;
   },
   async ladder(s) {
@@ -107,7 +108,7 @@ const R = {
     const cs = ['amber', 'teal', 'coral', 'green'];
     return `<section><div class="chip">${part}</div><h2>${s.title}</h2>
       <div class="grid g4">${s.items.map((it, i) => `<div class="card center ${cs[i]}"><span class="k">${it.t}</span><div class="t">${it.z}</div><div class="d">${it.p}</div></div>`).join('')}</div>
-      <div class="short" style="margin-top:18px">${mock(img('shot-github-commits-crop'), 'github.com/keanu77/reverse-engineer-searcher/commits　每一格＝一次 commit')}</div>
+      ${s.shot ? `<div class="short" style="margin-top:18px">${mock(img(s.shot), s.shotUrl || '')}</div>` : ''}
       ${notes(s.notes)}</section>`;
   },
   async fork(s) {
@@ -145,28 +146,21 @@ const R = {
     return `<section><div class="chip">${part}</div><h2>${s.title}</h2>
       <table class="cmp"><thead><tr>${s.head.map((h, i) => `<th class="${['', 'green', 'teal', 'amber'][i]}">${h}</th>`).join('')}</tr></thead>
       <tbody>${s.rows.map((r) => `<tr>${r.map((c, i) => (i ? `<td>${c}</td>` : `<th>${c}</th>`)).join('')}</tr>`).join('')}</tbody></table>
-      <div class="note">Vercel、Netlify 與 Cloudflare Pages 功能重疊；費用與方案以各官網最新資訊為準。</div>${notes(s.notes)}</section>`;
+      ${s.foot ? `<div class="note">${s.foot}</div>` : ''}${notes(s.notes)}</section>`;
   },
   async decision(s) {
     const q = (t) => `<div class="dq">${t}</div>`;
     const o = (c, lv, t) => `<div class="do ${c}"><b>${lv}</b> ${t}</div>`;
     const yes = (l) => `<div class="da">${l}　→</div>`;
     const down = (l) => `<div class="dd">↓ ${l}</div><div></div><div></div>`;
-    return `<section><div class="chip">${part}</div><h2>${s.title}</h2>
-      <div class="dgrid">
-        ${q('需要存資料、登入，或在伺服器上運算？')}${yes('是')}${o('green', 'Lv3', 'Zeabur')}
-        ${down('否')}
-        ${q('要長期使用、給學員一個固定網址？')}${yes('否')}${o('coral', 'Lv0', 'Claude Artifacts')}
-        ${down('是')}
-        ${q('內容可以公開，用 github.io 網址就好？')}${yes('是')}${o('amber', 'Lv1', 'GitHub Pages')}
-        ${down('否：要保密或自訂網址')}
-        ${o('teal', 'Lv2', 'Cloudflare Pages')}<div></div><div></div>
-      </div>${notes(s.notes)}</section>`;
+    const rows = (s.rows || []).map((r) => q(r.q) + yes(r.yes) + o(r.to.c, r.to.lv, r.to.t) + (r.down ? down(r.down) : '')).join('');
+    const last = s.last ? o(s.last.c, s.last.lv, s.last.t) + '<div></div><div></div>' : '';
+    return `<section><div class="chip">${part}</div><h2>${s.title}</h2><div class="dgrid">${rows}${last}</div>${notes(s.notes)}</section>`;
   },
   async catoverview(s) {
-    part = '03 教學工具';
-    return `<section ${bgAttr('bg-zeabur', 0.35)}>
-      <div class="chip">03 我的教學工具</div><h2>${s.title}</h2>
+    part = s.chip || '工具';
+    return `<section ${s.bg ? bgAttr(s.bg, 0.35) : ''}>
+      <div class="chip">${part}</div><h2>${s.title}</h2>
       <div class="grid g3">${cats.slice(1).map((c, i) => `<div class="card ${COLORS[i + 1]}"><span class="k">${CIRC[i + 1]} ${c.name}</span><div class="d">${c.pain}</div><div class="cnt">${c.keys.length} 個工具</div></div>`).join('')}</div>
       ${notes(s.notes)}</section>`;
   },
@@ -194,7 +188,7 @@ const R = {
       <div class="note"><b>${s.foot}</b></div>${notes(s.notes)}</section>`;
   },
   async risk(s) {
-    part = '05 原則與風險';
+    part = s.chip || part;
     const cs = ['coral', 'amber', 'teal'];
     return `<section><div class="chip">${part}</div><h2>${s.title}</h2>
       <ol class="steps">${s.items.map((it) => `<li><b>${it.h}</b><span>${it.p}</span></li>`).join('')}</ol>${notes(s.notes)}</section>`;
@@ -229,7 +223,7 @@ const EXTRA_CSS = fs.readFileSync(path.join(__dirname, 'styles/deck.css'), 'utf8
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI 輔助教學的應用｜GitHub・Cloudflare・Zeabur</title>
+<title>${esc(meta.title || (slides[0] && slides[0].title) || 'Slides')}</title>
 <style>${strip(rv('dist/reset.css'))}</style>
 <style>${strip(rv('dist/reveal.css'))}</style>
 <style>${strip(rv('dist/theme/night.css'))}</style>
@@ -242,10 +236,10 @@ const EXTRA_CSS = fs.readFileSync(path.join(__dirname, 'styles/deck.css'), 'utf8
 <script>${rv('plugin/notes/notes.js')}</script>
 <script>
 Reveal.initialize({ width: 1280, height: 720, margin: 0.06, hash: true, transition: 'slide', backgroundTransition: 'fade',
-  center: true, progress: true, controls: true, slideNumber: 'c/t', plugins: [ RevealNotes ] });
+  center: true, progress: true, controls: true, slideNumber: 'c/t', pdfSeparateFragments: false, plugins: [ RevealNotes ] });
 </script>
 </body></html>`;
-  fs.mkdirSync('dist', { recursive: true });
-  fs.writeFileSync('dist/index.html', html);
+  fs.mkdirSync(path.join(__dirname, 'dist'), { recursive: true });
+  fs.writeFileSync(path.join(__dirname, 'dist/index.html'), html);
   console.log('slides', slides.length, 'bytes', html.length);
 })();

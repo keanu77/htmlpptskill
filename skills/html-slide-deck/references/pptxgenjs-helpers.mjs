@@ -6,8 +6,7 @@ export const C = {
 };
 export const F = { ui: 'Microsoft JhengHei', mono: 'Menlo' };
 export const W = 10, H = 5.625, M = 0.5;
-export const AUTHOR = '署名';
-export const FOOT = '簡報名稱｜署名';
+export const FOOT = '簡報名稱｜署名';  // 改成你的頁尾
 
 
 const t = (text, o = {}) => ({ text, options: o });

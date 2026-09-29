@@ -1,8 +1,9 @@
 {
-  "name": "ai-teaching-deck",
+  "name": "my-deck",
   "private": true,
   "version": "1.0.0",
-  "description": "AI 輔助教學的應用：50 頁離線 HTML 簡報",
+  "description": "離線單檔 reveal.js 簡報（content.js＋build.js）",
+  "engines": { "node": ">=18" },
   "scripts": {
     "build": "node build.js",
     "check": "node scripts/check.mjs",
@@ -10,7 +11,7 @@
   },
   "dependencies": {
     "qrcode": "^1.5.4",
-    "reveal.js": "5.1.0"
+    "reveal.js": "^5.2.1"
   },
   "devDependencies": {
     "jsqr": "^1.4.0",

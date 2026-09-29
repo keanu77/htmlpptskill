@@ -1,0 +1,7 @@
+{
+  "name": "keanu77",
+  "owner": { "name": "Ethan Wu" },
+  "plugins": [
+    { "name": "htmlpptskill", "source": "./", "description": "reveal.js HTML 簡報製作、QA、講義 PPTX／PDF 與特效的兩個 skill" }
+  ]
+}

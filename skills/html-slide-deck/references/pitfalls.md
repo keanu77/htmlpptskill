@@ -67,8 +67,8 @@ prs.save('out.pptx')
 - 訪客建題不需 AI Key；場次代碼六位數；Q&A 匿名顯示但平台保存場次資料。
 
 ## 做法 B（offline-build-template）
-- `npm install` 不會下載瀏覽器；不想再裝一份就指到本機既有的 Playwright Chromium：
-  `CHROMIUM_PATH="$(find ~/Library/Caches/ms-playwright -maxdepth 7 -type f -name 'Google Chrome for Testing' | head -1)" npm run check`
+- `npm install` 不會下載瀏覽器；不想再裝一份就指到本機既有的 Playwright Chromium（macOS `~/Library/Caches/ms-playwright`、Linux `~/.cache/ms-playwright`、Windows `%LOCALAPPDATA%\ms-playwright`）：
+  `CHROMIUM_PATH="$(find ~/Library/Caches/ms-playwright -maxdepth 7 -type f -name 'Google Chrome for Testing' | head -1)" npm run check`；四支 Playwright 腳本都吃 `CHROMIUM_PATH`。Linux 無 GUI 主機還要 `npx playwright install-deps chromium`，且要有中文字型（例如 Noto Sans CJK）否則截圖是方框。
 - 主題 CSS 內嵌時要拿掉 `@import`（Google Fonts），字型用系統堆疊 `'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif`。
 - `img()` 找不到圖回傳 null 時不要直接塞進屬性（會出現 `src="null"`）；範本已改成 `bgAttr()`／`mock()` 自動略過。
 - 一頁多個小 QR（資源頁）jsqr 解不出來，改成逐個 QR 元素單獨截圖再解，或只驗工具頁的大 QR。
@@ -77,6 +77,8 @@ prs.save('out.pptx')
 - `r-fit-text` 放在 grid 的 `1fr` 欄裡會把欄撐到無限寬（inline-block＋nowrap），只適合單獨一行的大字；多行問句改固定 `font-size`。
 - Auto-Animate 兩頁在 QA 截圖時會抓到補間中途 → `autoAnimateDuration: STATIC ? 0 : 0.9`。
 - 3D 翻卡：`.flip{height:固定}`＋`.inner{transform-style:preserve-3d}`，fragment 用 `custom` class（`.reveal .fragment.custom.flipall{opacity:1}`）否則整組卡片在點擊前是隱形的；QA 時 `html.static .flip .inner{transition:none}`。
-- 一頁多張 QR：jsqr 對整頁只解得出一張，`qa-screenshots` 已改成逐個 `.qrcard` 元素截圖解碼，每張都要 `data-url`。
+- 一頁多張 QR：jsqr 對整頁只解得出一張，`qa-screenshots` 與範本 `check.mjs` 都是逐個 `.qrcard` 元素截圖解碼，每張都要 `data-url`；解不開就是失敗，不是「正常」。
+- 截圖檔名三位數（`h-001.png`），超過 99 頁排序才正確。
+- `render-slides.mjs` 預設直接輸出 JPEG（1280×720 ×1.5），不必再轉檔。
 - `?print-pdf` 預設 `pdfSeparateFragments:true`，54 頁會印成 79 頁；在 initialize 設 false。
 - 用 python-pptx 抓 PPTX 裡的 QR 圖片、再用 jsqr 解碼，可還原使用者手動加的 QR 網址（`skill 目錄自帶的 node_modules` 有 jsqr／pngjs）。

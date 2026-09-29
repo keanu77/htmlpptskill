@@ -1,4 +1,4 @@
-/* 取自 deliverables/appendix-html/index.html，維持同一套視覺 */
+/* 深色主題（reveal.js night＋自訂色票），沿用即可；新增版型寫 deck.css */
     :root {
       --bg: #0B1F2A; --card: #13303C; --card2: #1A3E4C; --line: #2A5262;
       --text: #F3F7F8; --muted: #A3B8C0; --dim: #6F8791;

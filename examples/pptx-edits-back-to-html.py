@@ -5,6 +5,7 @@ fragment／auto-animate／3D 翻卡／GSAP／內嵌測驗／計時條／lightbox
   stripped.html／imgs.json：先把原 HTML 的 base64 圖片換成 __IMGn__ 占位符（見 README「實例」段）
   libs-dir：npm install reveal.js@5 gsap 的目錄
 這支腳本綁定作者那份簡報的字串，直接跑不會成功；它的價值是示範每一種技巧怎麼用正則安全地套進既有 HTML。
+內嵌的五題超音波測驗是示例題目、未經審查，勿直接教學使用。
 """
 
 import io

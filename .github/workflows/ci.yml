@@ -1,0 +1,32 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Syntax checks
+        run: |
+          for f in skills/html-slide-deck/scripts/*.mjs skills/html-slide-deck/references/*.mjs skills/html-slide-deck/references/offline-build-template/scripts/*.mjs; do node --check "$f"; done
+          node --check skills/html-slide-deck/references/offline-build-template/build.js
+          python -m py_compile skills/html-slide-deck/scripts/montage.py examples/pptx-edits-back-to-html.py
+          bash -n install.sh skills/html-slide-deck/scripts/*.sh
+          pip install ruff && ruff check skills/html-slide-deck/scripts/montage.py examples/pptx-edits-back-to-html.py
+      - name: Template smoke build + check
+        working-directory: skills/html-slide-deck/references/offline-build-template
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          sudo apt-get install -y fonts-noto-cjk
+          npm run all
+      - name: Skill QA script on the single-file template
+        run: |
+          cd skills/html-slide-deck && npm install --no-audit --no-fund && cd ../..
+          cd skills/html-slide-deck/references/offline-build-template
+          SKILL_PKG_ROOT="$PWD" node ../../scripts/qa-screenshots.mjs dist/index.html ../../../../qa-out
+          SKILL_PKG_ROOT="$PWD" node ../../scripts/print-pdf.mjs dist/index.html ../../../../qa-out/deck.pdf
+          SKILL_PKG_ROOT="$PWD" node ../../scripts/render-slides.mjs dist/index.html ../../../../qa-out/render

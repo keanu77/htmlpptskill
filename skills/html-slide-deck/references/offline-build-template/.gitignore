@@ -1,3 +1,4 @@
 node_modules/
 check-output/
+dist/
 .DS_Store
