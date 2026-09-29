@@ -1,0 +1,98 @@
+/* 取自 deliverables/appendix-html/index.html，維持同一套視覺 */
+    :root {
+      --bg: #0B1F2A; --card: #13303C; --card2: #1A3E4C; --line: #2A5262;
+      --text: #F3F7F8; --muted: #A3B8C0; --dim: #6F8791;
+      --amber: #F2B84B; --teal: #3FC1B7; --coral: #E8846B; --green: #6FCF97;
+    }
+    .reveal-viewport { background: var(--bg); }
+    .reveal { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', 'Segoe UI', sans-serif; font-size: 30px; color: var(--text); }
+    .reveal h1, .reveal h2, .reveal h3 { font-family: inherit; font-weight: 700; letter-spacing: -0.01em; text-transform: none; color: var(--text); text-shadow: none; }
+    .reveal h1 { font-size: 1.9em; line-height: 1.25; }
+    .reveal h2 { font-size: 1.25em; margin-bottom: 0.6em; text-align: left; }
+    .reveal h3 { font-size: 0.8em; }
+    .reveal p, .reveal li { line-height: 1.55; }
+    .reveal section { text-align: left; }
+    .reveal .slides section { padding: 0 40px; box-sizing: border-box; }
+    .reveal .progress { color: var(--amber); }
+    .reveal .controls { color: var(--teal); }
+    .reveal .slide-number { background: transparent; color: var(--dim); font-size: 14px; }
+    .reveal a { color: var(--teal); }
+    .reveal code { font-family: Menlo, 'SF Mono', monospace; font-size: 0.8em; background: rgba(255,255,255,0.08); padding: 0 6px; border-radius: 6px; color: var(--teal); }
+
+    .chip { display: inline-block; font-size: 0.42em; font-weight: 700; padding: 4px 16px; border-radius: 999px; background: var(--card2); color: var(--teal); margin-bottom: 0.9em; letter-spacing: 0.04em; }
+    .chip.amber { background: transparent; border: 1.5px solid var(--amber); color: var(--amber); }
+    .lead { font-size: 0.72em; color: var(--muted); margin: 0 0 0.6em 0; }
+    .big { font-size: 1.15em; font-weight: 700; color: var(--amber); line-height: 1.4; }
+    .note { background: var(--card2); border-radius: 14px; padding: 16px 24px; font-size: 0.6em; color: var(--muted); margin-top: 0.8em; }
+    .note b { color: var(--text); }
+
+    .grid { display: grid; gap: 18px; margin-top: 0.4em; }
+    .g2 { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr 1fr; }
+    .g4 { grid-template-columns: repeat(4, 1fr); }
+    .card { background: var(--card); border-radius: 16px; padding: 20px 22px; }
+    .card .t { font-weight: 700; font-size: 0.72em; margin-bottom: 8px; }
+    .card .d { font-size: 0.56em; color: var(--muted); line-height: 1.6; }
+    .card.center { text-align: center; }
+    .card .k { font-size: 1.1em; font-weight: 900; color: var(--teal); display: block; margin-bottom: 4px; }
+    .card.amber .k, .card.amber .t { color: var(--amber); }
+    .card.coral .k, .card.coral .t { color: var(--coral); }
+    .card.green .k, .card.green .t { color: var(--green); }
+    .card.teal .k, .card.teal .t { color: var(--teal); }
+    .bar { border-left: 6px solid var(--teal); padding-left: 14px; }
+    .bar.coral { border-color: var(--coral); }
+    .bar.amber { border-color: var(--amber); }
+    .bar.green { border-color: var(--green); }
+    .reveal ul { margin: 0.2em 0 0 0.9em; font-size: 0.66em; }
+    .reveal ul li { margin: 0.25em 0; }
+    .reveal ol.steps { counter-reset: s; list-style: none; list-style-type: none; margin: 0.5em 0 0 0; padding: 0; }
+    .reveal ol.steps li { counter-increment: s; list-style: none; position: relative; padding-left: 56px; margin: 0 0 0.75em 0; font-size: 0.7em; line-height: 1.45; }
+    .steps li::before { content: counter(s); position: absolute; left: 0; top: 2px; width: 38px; height: 38px; border-radius: 50%; background: var(--amber); color: var(--bg); font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 0.85em; }
+    .steps li b { display: block; color: var(--text); }
+    .steps li span { color: var(--muted); font-size: 0.85em; }
+    .icon { width: 64px; height: 64px; display: block; margin: 0 auto 10px auto; }
+
+    /* 章節頁 */
+    .chapter .num { font-size: 3.2em; font-weight: 900; color: var(--amber); line-height: 1; }
+    .chapter h1 { margin: 0.1em 0 0.2em 0; }
+    .chapter .sub { font-size: 0.75em; color: var(--muted); }
+    .chapter .tools { margin-top: 1.4em; font-size: 0.55em; color: var(--teal); font-weight: 700; }
+    .side { display: none; }
+
+    /* 模擬畫面 */
+    .mock { background: #F7FAFB; color: #1b2a33; border-radius: 12px; overflow: hidden; font-size: 0.5em; box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
+    .mock .top { background: #E4EBEF; padding: 8px 14px; display: flex; gap: 8px; align-items: center; font-size: 0.85em; color: #4a5a63; }
+    .mock .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .mock .body { padding: 14px 18px; }
+    .mock .row { display: flex; justify-content: space-between; padding: 8px 6px; border-bottom: 1px solid #dfe7eb; }
+    .mock .row:last-child { border-bottom: none; }
+    .mock .ok { color: #1c8a4c; font-weight: 700; }
+    .mock .tag { background: #DCEFF5; color: #0B5F73; border-radius: 6px; padding: 2px 8px; font-size: 0.85em; }
+    .mock .url { font-family: Menlo, monospace; background: #E9F5F3; color: #0B5F73; padding: 3px 8px; border-radius: 6px; }
+    .callout { position: absolute; background: var(--amber); color: var(--bg); font-weight: 700; font-size: 0.5em; padding: 6px 12px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+
+    /* 滑桿對比 */
+    .viz { position: relative; height: 380px; border-radius: 14px; overflow: hidden; margin-top: 0.4em; }
+    .viz .pane { position: absolute; inset: 0; padding: 22px 26px; box-sizing: border-box; font-size: 0.6em; }
+    .viz .before { background: #2C1E1E; }
+    .viz .after { background: #10322F; clip-path: inset(0 100% 0 0); }
+    .viz .divider { position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, transparent, var(--teal), transparent); box-shadow: 0 0 12px var(--teal); pointer-events: none; }
+    .viz .lbl { position: absolute; top: 10px; font-weight: 700; font-size: 0.5em; padding: 3px 10px; border-radius: 8px; }
+    .viz .lbl.l { left: 12px; background: var(--coral); color: var(--bg); }
+    .viz .lbl.r { right: 12px; background: var(--teal); color: var(--bg); }
+    .viz .files { list-style: none; margin: 30px 0 0 0; padding: 0; font-family: Menlo, monospace; color: #F0C9C9; }
+    .viz .files li { padding: 4px 0; }
+    .viz .log { list-style: none; margin: 30px 0 0 0; padding: 0; color: #CDEFEA; }
+    .viz .log li { padding: 5px 0; border-left: 3px solid var(--teal); padding-left: 12px; margin-bottom: 8px; }
+    .viz .log li b { color: var(--teal); font-family: Menlo, monospace; margin-right: 8px; }
+    .slider { width: 100%; margin-top: 12px; accent-color: var(--teal); }
+    .hint { font-size: 0.5em; color: var(--dim); text-align: center; margin-top: 4px; }
+
+    /* 流程圖 */
+    .flow { display: grid; grid-template-columns: 1fr 60px 1fr 60px 1fr; align-items: center; gap: 0; margin-top: 0.6em; }
+    .flow .arrow { text-align: center; color: var(--dim); font-size: 1.3em; }
+    .flow .card { min-height: 190px; }
+
+    .footer { position: absolute; bottom: 18px; left: 40px; font-size: 0.4em; color: var(--dim); }
+    .reveal .slides section.has-footer { padding-bottom: 50px; }
+  

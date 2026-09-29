@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<!--
+  reveal.js 簡報模板（html-slide-deck skill）
+  - 預設從 jsDelivr CDN 載入 reveal.js 5.1.0 與 Google Fonts；會場沒網路時，把三個 <link> 與兩個 <script src> 換成內嵌
+    （curl 下載後貼進 <style>／<script>；notes.js 原始碼含 </body>，插入時找「最後一個」</body>），單檔約多 300 KB。
+  - 圖片：images/*.jpg 為相對路徑；交付單檔時轉 base64 嵌入（見 SKILL.md §1）。
+  - 範例頁依需求複製／刪除；class 說明見 SKILL.md §1。
+-->
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>三個平台，各管一件事｜GitHub・Cloudflare・Zeabur 零基礎教學</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0B1F2A; --card: #13303C; --card2: #1A3E4C; --line: #2A5262;
+      --text: #F3F7F8; --muted: #A3B8C0; --dim: #6F8791;
+      --amber: #F2B84B; --teal: #3FC1B7; --coral: #E8846B; --green: #6FCF97;
+    }
+    .reveal-viewport { background: var(--bg); }
+    .reveal { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', 'Segoe UI', sans-serif; font-size: 30px; color: var(--text); }
+    .reveal h1, .reveal h2, .reveal h3 { font-family: inherit; font-weight: 700; letter-spacing: -0.01em; text-transform: none; color: var(--text); text-shadow: none; }
+    .reveal h1 { font-size: 1.9em; line-height: 1.25; }
+    .reveal h2 { font-size: 1.25em; margin-bottom: 0.6em; text-align: left; }
+    .reveal h3 { font-size: 0.8em; }
+    .reveal p, .reveal li { line-height: 1.55; }
+    .reveal section { text-align: left; }
+    .reveal .slides section { padding: 0 40px; box-sizing: border-box; }
+    .reveal .progress { color: var(--amber); }
+    .reveal .controls { color: var(--teal); }
+    .reveal .slide-number { background: transparent; color: var(--dim); font-size: 14px; }
+    .reveal a { color: var(--teal); }
+    .reveal code { font-family: Menlo, 'SF Mono', monospace; font-size: 0.8em; background: rgba(255,255,255,0.08); padding: 0 6px; border-radius: 6px; color: var(--teal); }
+
+    .chip { display: inline-block; font-size: 0.42em; font-weight: 700; padding: 4px 16px; border-radius: 999px; background: var(--card2); color: var(--teal); margin-bottom: 0.9em; letter-spacing: 0.04em; }
+    .chip.amber { background: transparent; border: 1.5px solid var(--amber); color: var(--amber); }
+    .lead { font-size: 0.72em; color: var(--muted); margin: 0 0 0.6em 0; }
+    .big { font-size: 1.15em; font-weight: 700; color: var(--amber); line-height: 1.4; }
+    .note { background: var(--card2); border-radius: 14px; padding: 16px 24px; font-size: 0.6em; color: var(--muted); margin-top: 0.8em; }
+    .note b { color: var(--text); }
+
+    .grid { display: grid; gap: 18px; margin-top: 0.4em; }
+    .g2 { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr 1fr; }
+    .g4 { grid-template-columns: repeat(4, 1fr); }
+    .card { background: var(--card); border-radius: 16px; padding: 20px 22px; }
+    .card .t { font-weight: 700; font-size: 0.72em; margin-bottom: 8px; }
+    .card .d { font-size: 0.56em; color: var(--muted); line-height: 1.6; }
+    .card.center { text-align: center; }
+    .card .k { font-size: 1.1em; font-weight: 900; color: var(--teal); display: block; margin-bottom: 4px; }
+    .card.amber .k, .card.amber .t { color: var(--amber); }
+    .card.coral .k, .card.coral .t { color: var(--coral); }
+    .card.green .k, .card.green .t { color: var(--green); }
+    .card.teal .k, .card.teal .t { color: var(--teal); }
+    .bar { border-left: 6px solid var(--teal); padding-left: 14px; }
+    .bar.coral { border-color: var(--coral); }
+    .bar.amber { border-color: var(--amber); }
+    .bar.green { border-color: var(--green); }
+    .reveal ul { margin: 0.2em 0 0 0.9em; font-size: 0.66em; }
+    .reveal ul li { margin: 0.25em 0; }
+    .reveal ol.steps { counter-reset: s; list-style: none; list-style-type: none; margin: 0.5em 0 0 0; padding: 0; }
+    .reveal ol.steps li { counter-increment: s; list-style: none; position: relative; padding-left: 56px; margin: 0 0 0.75em 0; font-size: 0.7em; line-height: 1.45; }
+    .steps li::before { content: counter(s); position: absolute; left: 0; top: 2px; width: 38px; height: 38px; border-radius: 50%; background: var(--amber); color: var(--bg); font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 0.85em; }
+    .steps li b { display: block; color: var(--text); }
+    .steps li span { color: var(--muted); font-size: 0.85em; }
+    .icon { width: 64px; height: 64px; display: block; margin: 0 auto 10px auto; }
+
+    /* 章節頁 */
+    .chapter .num { font-size: 3.2em; font-weight: 900; color: var(--amber); line-height: 1; }
+    .chapter h1 { margin: 0.1em 0 0.2em 0; }
+    .chapter .sub { font-size: 0.75em; color: var(--muted); }
+    .chapter .tools { margin-top: 1.4em; font-size: 0.55em; color: var(--teal); font-weight: 700; }
+    .side { display: none; }
+
+    /* 模擬畫面 */
+    .mock { background: #F7FAFB; color: #1b2a33; border-radius: 12px; overflow: hidden; font-size: 0.5em; box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
+    .mock .top { background: #E4EBEF; padding: 8px 14px; display: flex; gap: 8px; align-items: center; font-size: 0.85em; color: #4a5a63; }
+    .mock .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .mock .body { padding: 14px 18px; }
+    .mock .row { display: flex; justify-content: space-between; padding: 8px 6px; border-bottom: 1px solid #dfe7eb; }
+    .mock .row:last-child { border-bottom: none; }
+    .mock .ok { color: #1c8a4c; font-weight: 700; }
+    .mock .tag { background: #DCEFF5; color: #0B5F73; border-radius: 6px; padding: 2px 8px; font-size: 0.85em; }
+    .mock .url { font-family: Menlo, monospace; background: #E9F5F3; color: #0B5F73; padding: 3px 8px; border-radius: 6px; }
+    .callout { position: absolute; background: var(--amber); color: var(--bg); font-weight: 700; font-size: 0.5em; padding: 6px 12px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+
+    /* 滑桿對比 */
+    .viz { position: relative; height: 380px; border-radius: 14px; overflow: hidden; margin-top: 0.4em; }
+    .viz .pane { position: absolute; inset: 0; padding: 22px 26px; box-sizing: border-box; font-size: 0.6em; }
+    .viz .before { background: #2C1E1E; }
+    .viz .after { background: #10322F; clip-path: inset(0 100% 0 0); }
+    .viz .divider { position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, transparent, var(--teal), transparent); box-shadow: 0 0 12px var(--teal); pointer-events: none; }
+    .viz .lbl { position: absolute; top: 10px; font-weight: 700; font-size: 0.5em; padding: 3px 10px; border-radius: 8px; }
+    .viz .lbl.l { left: 12px; background: var(--coral); color: var(--bg); }
+    .viz .lbl.r { right: 12px; background: var(--teal); color: var(--bg); }
+    .viz .files { list-style: none; margin: 30px 0 0 0; padding: 0; font-family: Menlo, monospace; color: #F0C9C9; }
+    .viz .files li { padding: 4px 0; }
+    .viz .log { list-style: none; margin: 30px 0 0 0; padding: 0; color: #CDEFEA; }
+    .viz .log li { padding: 5px 0; border-left: 3px solid var(--teal); padding-left: 12px; margin-bottom: 8px; }
+    .viz .log li b { color: var(--teal); font-family: Menlo, monospace; margin-right: 8px; }
+    .slider { width: 100%; margin-top: 12px; accent-color: var(--teal); }
+    .hint { font-size: 0.5em; color: var(--dim); text-align: center; margin-top: 4px; }
+
+    /* QR 卡（白底；放在 grid 固定寬欄位如 250px／300px 內） */
+    .qrcard { background: #fff; border-radius: 16px; padding: 12px 12px 8px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
+    .qrcard .qrsvg { display: block; width: 100%; height: auto; }
+    .qrcard .qrl { color: #0B1F2A; font-family: Menlo, monospace; font-size: 0.4em; font-weight: 700; margin-top: 4px; word-break: break-all; line-height: 1.3; }
+    .qrcard.s { padding: 8px 8px 6px; border-radius: 12px; width: 150px; margin: 8px auto 0; box-shadow: none; }
+    .qrcard.s .qrl { font-size: 0.34em; }
+    .cl-code-input { width: 220px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-family: Menlo, monospace; font-size: 0.6em; text-align: center; letter-spacing: 0.2em; outline: none; margin-top: 8px; }
+    .btn { display: inline-block; background: var(--amber); color: var(--bg); font-weight: 700; font-size: 0.55em; padding: 10px 22px; border-radius: 999px; text-decoration: none; }
+
+    /* 流程圖 */
+    .flow { display: grid; grid-template-columns: 1fr 60px 1fr 60px 1fr; align-items: center; gap: 0; margin-top: 0.6em; }
+    .flow .arrow { text-align: center; color: var(--dim); font-size: 1.3em; }
+    .flow .card { min-height: 190px; }
+
+    .footer { position: absolute; bottom: 18px; left: 40px; font-size: 0.4em; color: var(--dim); }
+    .reveal .slides section.has-footer { padding-bottom: 50px; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- ===== 範例頁（依需求複製／刪除）===== -->
+    <!-- 範例 1 封面（底圖＋半透明卡） -->
+    <section data-background-image="images/bg-cover.jpg" data-background-size="cover" data-background-opacity="0.9">
+      <div class="side"></div>
+      <div style="padding:26px 34px; margin-left:-4px; max-width:760px; background:rgba(11,31,42,0.62); border-radius:18px; backdrop-filter:blur(2px);">
+        <div class="chip amber">附錄・零基礎版・不計入 40 分鐘</div>
+        <h1>三個平台，各管一件事</h1>
+        <p class="lead" style="font-size:0.8em;">寫好的東西放哪裡、網站怎麼給人看、程式在哪裡跑。<br>GitHub・Cloudflare・Zeabur，給沒用過的人。</p>
+        <p style="font-size:0.6em;color:var(--teal);font-weight:700;margin-top:1.6em;">講者姓名・單位</p>
+        <p style="font-size:0.45em;color:var(--dim);">所有例子都來自本專案與四個 EBM 工具的實際部署紀錄（2026-09）</p>
+      </div>
+      <aside class="notes">這是附錄，不在 40 分鐘之內。對象是完全沒碰過這三個平台的人，所以全篇不出現終端機指令，只講「它是什麼、你會看到什麼、第一次怎麼用」，最後才放我自己的習慣。想進一步的人，指令都寫在各頁備註。</aside>
+    </section>
+
+    <!-- 範例 2 三卡並排（grid g3＋icon） -->
+    <section>
+      <div class="chip">先看全貌</div>
+      <h2>一張圖看懂分工</h2>
+      <div class="grid g3">
+        <div class="card center amber">
+          <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="#F2B84B" stroke-width="3"><rect x="10" y="14" width="44" height="40" rx="6"/><path d="M10 26h44M22 14v-6M42 14v-6"/><path d="M20 38h24M20 46h16"/></svg>
+          <span class="k">GitHub</span>
+          <div class="t">有修改紀錄的保險櫃</div>
+          <div class="d">你的檔案放這裡。每次改動都留一句話，隨時可以回到任何一版。</div>
+        </div>
+        <div class="card center teal">
+          <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="#3FC1B7" stroke-width="3"><circle cx="32" cy="32" r="22"/><path d="M10 32h44M32 10c8 8 8 36 0 44M32 10c-8 8-8 36 0 44"/></svg>
+          <span class="k">Cloudflare</span>
+          <div class="t">全世界看得到的展示架</div>
+          <div class="d">把一個網頁資料夾放上去，任何人打網址就看得到，免費。</div>
+        </div>
+        <div class="card center green">
+          <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="#6FCF97" stroke-width="3"><rect x="10" y="12" width="44" height="14" rx="4"/><rect x="10" y="38" width="44" height="14" rx="4"/><circle cx="18" cy="19" r="2" fill="#6FCF97"/><circle cx="18" cy="45" r="2" fill="#6FCF97"/></svg>
+          <span class="k">Zeabur</span>
+          <div class="t">租一台永遠開著的電腦</div>
+          <div class="d">有些工具要「算」（AI 分析、登入），需要一台不關機的電腦跑程式。</div>
+        </div>
+      </div>
+      <div class="note"><b>今天的路線：</b>先學會把檔案存好（GitHub），再學會讓網頁被看到（Cloudflare），最後才是需要伺服器的工具（Zeabur）。</div>
+      <aside class="notes">三句比喻先講清楚，後面每個平台都會回到這句。GitHub 管「存放與紀錄」，Cloudflare 管「被看到」，Zeabur 管「一直跑」。多數人第一次只需要前兩個。</aside>
+    </section>
+
+    <!-- 範例 3 章節頁（chapter＋底圖） -->
+    <section class="chapter" data-background-image="images/bg-github.jpg" data-background-size="cover" data-background-opacity="0.95">
+      <div class="side"></div>
+      <div style="padding-left:30px;">
+        <div class="num">A</div>
+        <h1>GitHub</h1>
+        <p class="sub">存放與記錄：檔案放這裡，每一次修改都有紀錄</p>
+        <p class="tools">本專案的網站與教材、四個 EBM 工具的程式都放在這裡</p>
+      </div>
+      <aside class="notes">GitHub 本質上是一個檔案倉庫加修改紀錄。它最常被誤會成「只有工程師用」，但寫教材、寫講稿的人一樣受益：每一版都找得回來，也知道是誰、什麼時候、為什麼改。</aside>
+    </section>
+
+    <!-- 範例 4 滑桿前後對比（viz） -->
+    <section>
+      <div class="chip">A GitHub</div>
+      <h2>為什麼需要它：拉動滑桿比較</h2>
+      <div class="viz">
+        <div class="pane before">
+          <span class="lbl l">沒有它</span>
+          <ul class="files">
+            <li>教案.docx</li>
+            <li>教案_修改.docx</li>
+            <li>教案_修改2.docx</li>
+            <li>教案_final.docx</li>
+            <li>教案_final_v3_真正最終.docx</li>
+            <li>教案_final_v3_真正最終(改).docx</li>
+          </ul>
+        </div>
+        <div class="pane after" id="viz-after">
+          <span class="lbl r">有它</span>
+          <ul class="log">
+            <li><b>09-28</b>補上 PubMed 重跑筆數，兩天相同</li>
+            <li><b>09-27</b>改用合成病例，移除真實病人資料</li>
+            <li><b>09-26</b>第一版教案完成，等具名核對</li>
+            <li><b>09-25</b>建立教案骨架</li>
+          </ul>
+        </div>
+        <div class="divider" id="viz-divider"></div>
+      </div>
+      <input id="viz-slider" class="slider" type="range" min="0" max="100" value="0" />
+      <div class="hint">← 拉動滑桿：左邊是大家熟悉的資料夾，右邊是同一份檔案在 GitHub 上的樣子 →</div>
+      <aside class="notes">左邊是所有人都經歷過的「真正最終版」地獄。右邊是同一份檔案在 GitHub 上：一條時間軸，每一格是一次存檔加一句說明，任何一格都能點回去看當時的完整內容。這就是 GitHub 對非工程師最大的價值。</aside>
+    </section>
+
+    <!-- 範例 5 真實截圖＋callout（mock） -->
+    <section>
+      <div class="chip">A GitHub</div>
+      <h2>你會看到的畫面</h2>
+      <div style="position:relative;">
+        <div class="mock" style="background:#fff;">
+          <div class="top"><span class="dot" style="background:#E8846B"></span><span class="dot" style="background:#F2B84B"></span><span class="dot" style="background:#6FCF97"></span>&nbsp; github.com/&lt;帳號&gt;/&lt;repo&gt;/commits（換成你的真實截圖）</div>
+          <img src="images/shot-github-commits-crop.png" alt="GitHub commits 頁面" style="display:block;width:100%;height:auto;margin:0;" />
+        </div>
+        <div class="callout" style="left:34%;top:46px;">Public＝公開；私人會寫 Private</div>
+        <div class="callout" style="left:54%;top:228px;">每一格＝一次存檔＋一句「改了什麼」</div>
+        <div class="callout" style="left:34%;bottom:-14px;">綠勾＝自動檢查通過，紅叉＝有一項沒過</div>
+      </div>
+      <aside class="notes">這是反向搜尋策略產生器（公開倉庫）的修改紀錄頁真實畫面。每一格是一次存檔加一句說明：fix 開頭是修錯、refactor 是整理。右邊 5/5 綠勾代表五項自動檢查全過，4/5 紅叉代表有一項沒過，那次是還沒把建置工具裝進正式環境。看懂這一頁，就看得懂九成的 GitHub 頁面。</aside>
+    </section>
+
+    <!-- 範例 6 步驟清單（ol.steps）＋note -->
+    <section>
+      <div class="chip">A GitHub</div>
+      <h2>第一次用：三步，不必打指令</h2>
+      <ol class="steps">
+        <li><b>註冊帳號，按右上角「＋」→ New repository</b><span>取一個英文名字，選 Private（私人）</span></li>
+        <li><b>按「Add file」→ Upload files，把檔案拖進去</b><span>Word、PDF、HTML 都可以，不限程式碼</span></li>
+        <li><b>下面那格寫一句「這次改了什麼」，按 Commit</b><span>這句話就是修改紀錄；寫給三個月後的自己看</span></li>
+      </ol>
+      <div class="note"><b>完全在網頁上操作。</b>等你熟了再學終端機指令；不熟的時候，網頁拖拉一樣是正規用法。</div>
+      <aside class="notes">三步全部在瀏覽器完成。很多教學一開始就教指令，把人嚇跑。先用網頁建立「存檔加留言」的習慣，指令是之後的事。想學指令的人：git add -A、git commit -m "訊息"、git push，就是這三步的鍵盤版。</aside>
+    </section>
+
+    <!-- 範例 7 文字＋截圖雙欄（grid g2） -->
+    <section>
+      <div class="chip">B Cloudflare</div>
+      <h2>它是什麼</h2>
+      <div class="grid g2" style="grid-template-columns: 1.1fr 1fr; align-items: start;">
+        <div>
+          <p class="big" style="font-size:0.95em;">把一個網頁資料夾放上去，任何人打網址就看得到；全球都有它的機房，所以開得快。</p>
+          <ul style="font-size:0.62em;">
+            <li><b style="color:var(--teal)">免費</b>：靜態網站不收費，本站就是</li>
+            <li><b style="color:var(--teal)">快</b>：檔案複製到全球機房，就近送出</li>
+            <li><b style="color:var(--teal)">安全</b>：自動給 https 加密憑證，不用自己申請</li>
+          </ul>
+        </div>
+        <div>
+          <div class="mock" style="background:#fff;">
+            <div class="top"><span class="dot" style="background:#E8846B"></span><span class="dot" style="background:#F2B84B"></span><span class="dot" style="background:#6FCF97"></span>&nbsp; your-site.pages.dev</div>
+            <img src="images/shot-site-home-small.png" alt="本站首頁" style="display:block;width:100%;height:auto;margin:0;" />
+          </div>
+          <div class="hint" style="margin-top:8px;">本站首頁，放在 Cloudflare Pages（2026-09-28）</div>
+        </div>
+      </div>
+      <div class="note"><b>什麼是「靜態網頁」？</b>打開就是固定內容的頁面：教案、講義、工具說明。不需要登入、不需要每次現算的，都算。</div>
+      <aside class="notes">靜態網頁就是「檔案本身就是網頁」，例如這份 HTML 簡報。需要登入、需要 AI 計算的工具不是靜態，那些去 Zeabur。分清這一點，就知道東西該放哪。</aside>
+    </section>
+
+    <!-- 範例 8 Classlido 互動頁：QR＋六位數代碼（.cl-code 以 localStorage 跨頁同步）＋主持畫面新分頁。不能 iframe。 -->
+    <section id="slide-classlido-live">
+      <div class="chip amber">互動模式・現在試試看</div>
+      <h2>掃碼加入，一起答一題</h2>
+      <div class="grid" style="grid-template-columns:300px 1fr 300px;align-items:center;gap:34px;">
+        <div class="qrcard" data-url="https://classlido.sportsmedicine.tw/live/join"><!-- data-url 讓 qa-screenshots 解碼比對 -->
+          <!-- 換成 segno 產生的 SVG：save(buf, kind='svg', xmldecl=False, svgclass=None, lineclass=None, omitsize=True) -->
+          <svg class="qrsvg" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35"><path fill="#fff" d="M0 0h35v35h-35z"/><path stroke="#0b1f2a" d="M1 1.5h7m1 0h2m1 0h2m1 0h4m1 0h2m2 0h1m2 0h7m-33 1h1m5 0h1m7 0h2m1 0h1m2 0h3m3 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h1m2 0h1m3 0h4m1 0h2m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m2 0h4m1 0h2m2 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m4 0h1m3 0h3m2 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h1m3 0h3m1 0h3m1 0h3m3 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-24 1h5m1 0h1m2 0h1m2 0h1m1 0h1m-23 1h7m1 0h2m2 0h1m3 0h1m1 0h1m2 0h2m3 0h2m3 0h1m-33 1h1m1 0h1m4 0h1m4 0h2m1 0h1m3 0h2m2 0h1m2 0h2m1 0h2m1 0h1m-33 1h1m5 0h2m1 0h2m1 0h2m1 0h1m2 0h1m2 0h1m3 0h2m1 0h1m1 0h2m-31 1h1m2 0h2m2 0h2m1 0h1m3 0h2m1 0h1m2 0h4m1 0h1m1 0h4m-31 1h2m2 0h2m1 0h2m2 0h1m5 0h1m3 0h1m1 0h2m1 0h3m1 0h2m-33 1h1m3 0h1m4 0h1m1 0h2m2 0h1m2 0h3m1 0h3m1 0h1m2 0h4m-33 1h2m1 0h1m1 0h2m1 0h1m2 0h2m1 0h1m2 0h1m2 0h2m3 0h2m2 0h3m-32 1h2m6 0h2m5 0h2m2 0h5m1 0h6m-31 1h3m2 0h3m1 0h1m1 0h2m1 0h1m3 0h3m1 0h1m2 0h1m1 0h2m3 0h1m-32 1h1m2 0h1m2 0h3m2 0h1m2 0h2m2 0h3m1 0h1m2 0h2m1 0h2m1 0h1m-31 1h2m1 0h2m1 0h5m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m1 0h2m-32 1h5m2 0h1m1 0h3m4 0h4m1 0h1m2 0h2m1 0h6m-32 1h2m3 0h3m2 0h2m1 0h1m1 0h3m3 0h1m4 0h3m-30 1h2m1 0h3m3 0h1m1 0h2m6 0h3m1 0h1m2 0h1m2 0h2m1 0h1m-33 1h1m1 0h2m2 0h1m1 0h1m2 0h1m1 0h1m1 0h3m3 0h2m1 0h1m3 0h1m1 0h2m-32 1h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m1 0h1m3 0h3m1 0h3m-32 1h1m1 0h1m1 0h1m1 0h1m1 0h4m1 0h3m1 0h1m1 0h2m1 0h1m1 0h5m2 0h2m-25 1h1m1 0h2m1 0h1m1 0h1m3 0h3m2 0h1m3 0h1m1 0h3m-33 1h7m1 0h2m1 0h3m7 0h4m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h4m4 0h9m3 0h3m-31 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m3 0h1m1 0h1m4 0h6m1 0h1m-32 1h1m1 0h3m1 0h1m1 0h1m1 0h2m5 0h4m3 0h2m2 0h1m3 0h1m-33 1h1m1 0h3m1 0h1m1 0h3m4 0h1m2 0h1m1 0h1m1 0h2m2 0h2m1 0h2m-31 1h1m5 0h1m1 0h3m3 0h2m2 0h6m1 0h2m1 0h3m-31 1h7m5 0h1m2 0h2m1 0h2m3 0h2m1 0h2m3 0h1"/></svg>
+          <div class="qrl">classlido.sportsmedicine.tw/live/join</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:0.55em;color:var(--muted);margin-bottom:6px;">輸入場次代碼</div>
+          <div class="cl-code" style="font-family:Menlo,monospace;font-size:2.6em;font-weight:900;letter-spacing:0.18em;color:var(--amber);line-height:1.1;">——————</div>
+          <div style="margin-top:14px;font-size:0.5em;color:var(--dim);">講者：開課後把代碼填在下面，全部頁面同步更新</div>
+          <input class="cl-code-input" maxlength="6" placeholder="六位數代碼" />
+          <div style="margin-top:14px;"><a class="btn" href="https://classlido.sportsmedicine.tw/quick" target="_blank" rel="noopener">開啟主持畫面（新分頁）↗</a></div>
+        </div>
+        <div>
+          <div class="mock" style="background:#fff;max-width:300px;margin:0 auto;">
+            <div class="top"><span class="dot" style="background:#E8846B"></span><span class="dot" style="background:#F2B84B"></span><span class="dot" style="background:#6FCF97"></span>&nbsp; 學生手機端</div>
+            <img src="images/shot-classlido-student.jpg" alt="學生手機端" style="display:block;width:100%;height:300px;object-fit:cover;object-position:top;margin:0;" />
+          </div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:0.6em;"><b>流程：</b>講者先在新分頁開課拿到代碼 → 在這頁填入 → 聽眾掃左邊 QR、輸入代碼與名字 → 講者按「出題」→ 回到主持畫面看即時結果。</div>
+      <aside class="notes">Classlido 不能嵌進簡報（X-Frame-Options: DENY），主持畫面開在新分頁。沒網路就用學生端截圖說明。開場提問頁可放同一組 QR 與 <span class="cl-code">——</span> 代碼。</aside>
+    </section>
+
+    <!-- 範例 9 封底 -->
+    <section data-background-image="images/bg-closing.jpg" data-background-size="cover" data-background-opacity="0.85">
+      <div class="side"></div>
+      <div style="padding-left:30px;">
+        <div class="chip amber">今天就能做的一件事</div>
+        <h1>30 分鐘擁有自己的網站</h1>
+        <ol class="steps" style="margin-top:0.6em;">
+          <li><b>開一個 GitHub 帳號，建一個私人倉庫</b><span>10 分鐘</span></li>
+          <li><b>放一個 index.html 進去（就算只寫一句「你好」）</b><span>5 分鐘</span></li>
+          <li><b>到 Cloudflare Pages 拖拉上傳同一個資料夾，拿到網址</b><span>15 分鐘</span></li>
+        </ol>
+        <p style="font-size:0.55em;color:var(--muted);margin-top:0.8em;">主簡報：<a href="https://your-site.pages.dev/">your-site.pages.dev</a>・課堂互動：<a href="https://classlido.sportsmedicine.tw/">Classlido</a></p>
+        <p style="font-size:0.6em;color:var(--teal);font-weight:700;">講者姓名・單位</p>
+      </div>
+      <aside class="notes">收尾只給一個作業：三十分鐘內讓自己的一頁網站上線。做過一次，前面所有名詞都會變成經驗。Zeabur 等真的需要伺服器再說。</aside>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0.06,
+    hash: true, transition: 'slide', backgroundTransition: 'fade',
+    center: true, progress: true, controls: true, slideNumber: 'c/t',
+    plugins: [ RevealNotes ]
+  });
+  (function () {
+    const slider = document.getElementById('viz-slider');
+    const after = document.getElementById('viz-after');
+    const divider = document.getElementById('viz-divider');
+    if (!slider) return;
+    const apply = (v) => { after.style.clipPath = `inset(0 ${100 - v}% 0 0)`; divider.style.left = v + '%'; };
+    slider.addEventListener('input', function () { apply(+this.value); });
+    apply(0);
+  })();
+</script>
+<script>
+  // Classlido 場次代碼：在 .cl-code-input 輸入一次，所有 .cl-code 跨頁同步（localStorage）。
+  (function () {
+    var KEY = 'classlido_code';
+    function render() {
+      var v = ''; try { v = localStorage.getItem(KEY) || ''; } catch (e) {}
+      document.querySelectorAll('.cl-code').forEach(function (el) { el.textContent = v ? v : (el.textContent.length > 3 ? '——————' : '——'); });
+      document.querySelectorAll('.cl-code-input').forEach(function (i) { if (i.value !== v) i.value = v; });
+    }
+    document.querySelectorAll('.cl-code-input').forEach(function (i) {
+      i.addEventListener('input', function () { var v = this.value.replace(/[^0-9]/g, '').slice(0, 6); try { localStorage.setItem(KEY, v); } catch (e) {} render(); });
+      i.addEventListener('keydown', function (e) { e.stopPropagation(); }); // 別讓 reveal 吃掉方向鍵／數字鍵
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

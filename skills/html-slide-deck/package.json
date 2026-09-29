@@ -1,0 +1,6 @@
+{
+  "name": "html-slide-deck-skill",
+  "private": true,
+  "description": "QA 用的純 JS 小套件（QR 解碼）。playwright／pptxgenjs 由專案或全域提供。",
+  "dependencies": { "jsqr": "^1.4.0", "pngjs": "^7.0.0" }
+}
