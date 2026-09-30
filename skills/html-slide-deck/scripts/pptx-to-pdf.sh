@@ -18,8 +18,9 @@ on run argv
   with timeout of 400 seconds
     tell application "Microsoft PowerPoint"
       try
-        set doc to open src
+        open src
         delay 8
+        set doc to active presentation
         set n to count of slides of doc
         save doc in dst as save as PDF
         delay 6

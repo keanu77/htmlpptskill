@@ -348,7 +348,7 @@ REPOS = {
     "shoulder-imaging.sportsmedicine.tw": "https://github.com/keanu77/shoulder-imaging-course",
     "marathongame.sportsmedicine.tw": "https://github.com/keanu77/marathongame",
     "recoverymaze.sportsmedicine.tw": "https://github.com/keanu77/recoverymaze",
-    "antidopingplatform.sportsmedicine.tw": "https://github.com/keanu77/antidoping-platform",
+    "antidopingplatform.sportsmedicine.tw": "https://github.com/keanu77/antidopingplatform",
     "athletetype.sportsmedicine.tw": "https://github.com/keanu77/athletetype",
     "exerciseprescription.sportsmedicine.tw": "https://github.com/keanu77/exercise-prescription-recommendation",
     "review.sportsmedicine.tw": "https://github.com/keanu77/review.sportsmedicine",
