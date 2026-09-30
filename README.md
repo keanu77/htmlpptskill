@@ -115,11 +115,13 @@ QA：qa-screenshots.mjs ─ 截圖、溢出、JS 錯誤、對外請求、QR 逐�
 
 ## 效果一覽（html-slide-effects）
 
+> 📘 **完整參考：[docs/TECHNIQUES.md](docs/TECHNIQUES.md)**　播放快捷鍵、換場設定、12 種動畫與講者工具的可複製程式碼，以及讓動畫不妨礙 QA 與 PDF 的 STATIC 開關。
+
 | 風格 | 用哪些 | 適合 |
 |---|---|---|
-| 穩重 | fragment 逐步出現、章節 zoom、計時條、點圖放大、頁內小測驗 | 醫學、學術、教學 |
-| 中間 | ＋ 3D 翻卡、GSAP 封面與收尾逐字 | 工作坊、內訓 |
-| 驚豔 | ＋ Three.js 封面、卡片牆飛入、Spotlight | 發表會、開幕 |
+| 穩重 | fade 換場、章節 zoom、fragment 逐步出現、計時條、點圖放大、頁內小測驗 | 醫學、學術、教學 |
+| 中間 | ＋ Auto-Animate、3D 翻卡、GSAP 封面與收尾逐字 | 工作坊、內訓 |
+| 驚豔 | ＋ Three.js 封面粒子、卡片牆飛入、Spotlight 聚光燈 | 發表會、開幕 |
 
 每一種都附「怎麼在 QA 截圖與 PDF 時關掉」的 STATIC 開關，以及 `prefers-reduced-motion` 退路。
 
@@ -149,7 +151,8 @@ skills/
 examples/
   workshop-2026/content.js        50 頁工作坊完整內容
   pptx-edits-back-to-html.py      講者在 PPTX 手改後回灌 HTML＋全部效果的實例（見 examples/README.md）
-docs/                             成果圖
+docs/TECHNIQUES.md                快捷鍵、換場、動畫技巧參考（附程式碼）
+docs/*.png                        成果圖
 .claude-plugin/                   Claude Code plugin／marketplace 設定
 AGENTS.md、CLAUDE.md              給在本 repo 工作的 agent
 ```

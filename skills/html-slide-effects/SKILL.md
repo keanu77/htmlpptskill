@@ -50,7 +50,7 @@ description: 為既有的 reveal.js HTML 簡報加入效果：逐步出現（fra
 <section data-transition="zoom">章節頁</section>
 <section data-transition="convex-in fade-out" data-transition-speed="slow">…</section>
 ```
-樣式：none、fade、slide、convex、concave、zoom；背景用 `data-background-transition`。建議全場用 slide，只有章節頁用 zoom。
+樣式：none、fade、slide、convex、concave、zoom；背景用 `data-background-transition`。建議全場 `fade`＋`transitionSpeed:'fast'`，只有章節頁用 zoom（每頁都 slide 看久會累，也讓換段落失去標記）。完整程式碼與快捷鍵見 repo `docs/TECHNIQUES.md`。
 
 ### 版面輔助 class
 - `r-fit-text`：文字自動放到最大，適合一句話頁。

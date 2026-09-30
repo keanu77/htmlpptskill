@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 — 2026-09-30
+- 新增 `docs/TECHNIQUES.md`：播放快捷鍵、換場設定、逐步出現／Auto-Animate／3D 翻卡／卡片牆飛入／GSAP 逐字／Three.js 粒子／Spotlight／計時條／lightbox／頁內測驗的可複製程式碼、STATIC 開關、常見的坑。
+- 建議換場改為全場 `fade`＋`fast`、章節頁 `zoom`；範例腳本同步。
+- `examples/three-particles-entry.js`：Three.js 封面粒子模組。
+
 ## 1.1.0 — 2026-09-29
 四模型審查（Codex／Claude／Grok／Gemini）後的整批修正：
 - 安裝：`install.sh` 支援 Claude Code／Codex／Gemini／Grok 與 `--project`（.agents/skills）、既有目錄先備份、Node 版本檢查；加 Claude Code plugin 設定（`.claude-plugin/`）與根 `AGENTS.md`／`CLAUDE.md`。

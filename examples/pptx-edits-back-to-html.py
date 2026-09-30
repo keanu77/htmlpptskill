@@ -544,7 +544,7 @@ scripts = f"""<script>{rd('reveal.js/dist/reveal.js')}</script>
 var REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 var STATIC = navigator.webdriver || location.search.indexOf('print-pdf') >= 0;  // QA 截圖／列印時不跑動畫
 if (STATIC) document.documentElement.classList.add('static');
-Reveal.initialize({{ width: 1280, height: 720, margin: 0.06, hash: true, transition: REDUCE ? 'fade' : 'slide', backgroundTransition: 'fade',
+Reveal.initialize({{ width: 1280, height: 720, margin: 0.06, hash: true, transition: 'fade', transitionSpeed: 'fast', backgroundTransition: 'fade',  // 一般頁淡入淡出；章節頁 data-transition=zoom；8→9 Auto-Animate
   autoAnimateDuration: STATIC ? 0 : 0.9, autoAnimateEasing: 'cubic-bezier(.4,.2,.2,1)',
   center: true, progress: true, controls: true, slideNumber: 'c/t', pdfSeparateFragments: false, plugins: [ RevealNotes ] }});
 </script>
