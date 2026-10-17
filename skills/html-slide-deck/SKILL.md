@@ -7,6 +7,7 @@ description: 用 reveal.js 製作或修改 HTML 簡報（單檔、可離線、�
 
 `$SKILL` 代表本檔所在目錄（Claude Code：`~/.claude/skills/html-slide-deck`；Codex：`~/.codex/skills/…`；Gemini：`~/.gemini/skills/…`；Grok：`~/.grok/skills/…`）。腳本在 `$SKILL/scripts/`，範本在 `$SKILL/references/`。
 腳本需要 Node 18+、`playwright`（＋Chromium）、`pptxgenjs`、Python 3（`segno`、`pillow`、`python-pptx`）；套件從**執行目錄往上**找 `node_modules`，找不到再找 npm 全域（可設 `SKILL_PKG_ROOT`）。依賴請使用者在終端機先裝好，不要在對話中代裝。
+**固定規則**：開始前先讀 `$SKILL/references/fixed-rules.md`，全程遵守（頁尾署名、課程簡報不得刪頁、醫療用語與文獻引用）。
 
 ## 0. 先問三件事（一次問完）
 

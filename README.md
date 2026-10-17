@@ -575,7 +575,10 @@ skills/
       offline-build-template/     做法 B：content.js＋build.js＋check.mjs＋PLAN.md＋角色檔
       pptxgenjs-helpers.mjs       原生 PPTX 的 theme 與 helper（＋ native-pptx-example.mjs）
       pitfalls.md                 踩過的雷與可複用片段
-  html-slide-effects/SKILL.md
+      fixed-rules.md              Keanu 的固定規則（SKILL.md 要求遵守）
+  html-slide-effects/
+    SKILL.md
+    references/fixed-rules.md     同上一份固定規則
 examples/
   workshop-2026/content.js        50 頁工作坊完整內容
   pptx-edits-back-to-html.py      講者在 PPTX 手改後回灌 HTML＋全部效果的實例（見 examples/README.md）

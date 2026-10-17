@@ -7,6 +7,8 @@ description: 為既有的 reveal.js HTML 簡報加入效果：逐步出現（fra
 
 使用時機：使用者想讓 HTML 簡報更生動、更好講、更適合現場互動，或問「有什麼特效或技巧可以加」。簡報本體的製作流程（版型、圖片、QA、轉 PPTX）在 `html-slide-deck`；本 skill 只管加在其上的效果。加完效果一律回頭跑 `html-slide-deck` 的 `qa-screenshots.mjs`。
 
+**固定規則**：開始前先讀本 skill 目錄下的 `references/fixed-rules.md`，全程遵守（加效果也不得刪頁）。
+
 ## 使用原則（先讀）
 
 1. **只放在 4～5 個關鍵時刻**：封面、章節轉折、核心概念圖、收尾。其他頁保持乾淨。
