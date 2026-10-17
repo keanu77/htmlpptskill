@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- 新增 `docs/html-slides-tips-from-x-2026-10-17.md`：整理自 X 使用者分享的 HTML 簡報流程原則、現成 Skill／工具與本專案固定規則（含來源連結）；README 目錄樹補連結。
+
 ## 1.2.0 — 2026-09-30
 - 新增 `docs/TECHNIQUES.md`：播放快捷鍵、換場設定、逐步出現／Auto-Animate／3D 翻卡／卡片牆飛入／GSAP 逐字／Three.js 粒子／Spotlight／計時條／lightbox／頁內測驗的可複製程式碼、STATIC 開關、常見的坑。
 - 建議換場改為全場 `fade`＋`fast`、章節頁 `zoom`；範例腳本同步。

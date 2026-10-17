@@ -580,6 +580,7 @@ examples/
   workshop-2026/content.js        50 頁工作坊完整內容
   pptx-edits-back-to-html.py      講者在 PPTX 手改後回灌 HTML＋全部效果的實例（見 examples/README.md）
 docs/TECHNIQUES.md                快捷鍵、換場、動畫技巧參考（附程式碼）
+docs/html-slides-tips-from-x-2026-10-17.md  X 使用者分享的 HTML 簡報技巧與工具整理（含來源連結）
 docs/*.png                        成果圖
 .claude-plugin/                   Claude Code plugin／marketplace 設定
 AGENTS.md、CLAUDE.md              給在本 repo 工作的 agent
