@@ -5,7 +5,8 @@
 **跟 AI 說一句「做一份 HTML 簡報」，拿到能離線播、QR 驗過、還附講義 PPTX／PDF 的成品。**
 
 reveal.js 簡報製作流程，包成兩個 Agent Skill。<br>
-Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。
+Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。<br>
+安裝後的 skill 內建作者的固定規則（`references/fixed-rules.md`）；X 上分享的簡報技巧整理見 [docs/html-slides-tips-from-x-2026-10-17.md](docs/html-slides-tips-from-x-2026-10-17.md)。
 
 [![CI](https://github.com/keanu77/htmlpptskill/actions/workflows/ci.yml/badge.svg)](https://github.com/keanu77/htmlpptskill/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](LICENSE)
@@ -575,7 +576,10 @@ skills/
       offline-build-template/     做法 B：content.js＋build.js＋check.mjs＋PLAN.md＋角色檔
       pptxgenjs-helpers.mjs       原生 PPTX 的 theme 與 helper（＋ native-pptx-example.mjs）
       pitfalls.md                 踩過的雷與可複用片段
-  html-slide-effects/SKILL.md
+      fixed-rules.md              Keanu 的固定規則（SKILL.md 要求遵守）
+  html-slide-effects/
+    SKILL.md
+    references/fixed-rules.md     同上一份固定規則
 examples/
   workshop-2026/content.js        50 頁工作坊完整內容
   pptx-edits-back-to-html.py      講者在 PPTX 手改後回灌 HTML＋全部效果的實例（見 examples/README.md）

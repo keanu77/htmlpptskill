@@ -19,6 +19,8 @@
 - DeckFlow：PPTX 轉 HTML 簡報，輸出分頁 HTML 與素材，可再交給 Agent 修改。來源：https://x.com/DeckFlowHQ/status/2101962124063134205
 
 ## Keanu 的固定規則（套用到本專案）
+> 已隨 skill 安裝：`skills/html-slide-deck/references/fixed-rules.md`、`skills/html-slide-effects/references/fixed-rules.md`；修改時三處一起改。
+
 - 社群輪播圖頁尾：「運動醫學科 吳易澄醫師製作 sportsmedicine.tw」
 - 課程簡報不得刪頁，只能同數或增加
 - 醫療內容避免絕對療效宣稱；解剖名詞、左右側、縮寫自我檢查，存疑標（待確認）
