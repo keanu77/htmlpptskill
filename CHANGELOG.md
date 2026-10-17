@@ -3,7 +3,7 @@
 ## Unreleased
 
 - 新增 `docs/html-slides-tips-from-x-2026-10-17.md`：整理自 X 使用者分享的 HTML 簡報流程原則、現成 Skill／工具與本專案固定規則（含來源連結）；README 目錄樹補連結。
-- 修正：固定規則原本只在 `docs/`，`install.sh` 不會安裝、skill 也沒引用。改為在兩個 skill 各附 `references/fixed-rules.md`（規則文字照抄），並在各自 `SKILL.md` 要求先讀並遵守。
+- 修正：固定規則原本只在 `docs/`，`install.sh` 不會安裝、skill 也沒引用。改為在兩個 skill 各附 `references/fixed-rules.md`（規則文字照抄），並在各自 `SKILL.md` 要求先讀並遵守；README 開頭簡介補上這兩點。
 
 ## 1.2.0 — 2026-09-30
 - 新增 `docs/TECHNIQUES.md`：播放快捷鍵、換場設定、逐步出現／Auto-Animate／3D 翻卡／卡片牆飛入／GSAP 逐字／Three.js 粒子／Spotlight／計時條／lightbox／頁內測驗的可複製程式碼、STATIC 開關、常見的坑。

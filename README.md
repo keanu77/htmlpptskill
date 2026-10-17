@@ -5,7 +5,8 @@
 **跟 AI 說一句「做一份 HTML 簡報」，拿到能離線播、QR 驗過、還附講義 PPTX／PDF 的成品。**
 
 reveal.js 簡報製作流程，包成兩個 Agent Skill。<br>
-Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。
+Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。<br>
+安裝後的 skill 內建作者的固定規則（`references/fixed-rules.md`）；X 上分享的簡報技巧整理見 [docs/html-slides-tips-from-x-2026-10-17.md](docs/html-slides-tips-from-x-2026-10-17.md)。
 
 [![CI](https://github.com/keanu77/htmlpptskill/actions/workflows/ci.yml/badge.svg)](https://github.com/keanu77/htmlpptskill/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](LICENSE)
