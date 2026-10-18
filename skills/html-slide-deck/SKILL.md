@@ -6,7 +6,7 @@ description: 用 reveal.js 製作或修改 HTML 簡報（單檔、可離線、�
 # HTML 簡報（reveal.js）完整流程
 
 `$SKILL` 代表本檔所在目錄（Claude Code：`~/.claude/skills/html-slide-deck`；Codex：`~/.codex/skills/…`；Gemini：`~/.gemini/skills/…`；Grok：`~/.grok/skills/…`）。腳本在 `$SKILL/scripts/`，範本在 `$SKILL/references/`。
-腳本需要 Node 18+、`playwright`（＋Chromium）、`pptxgenjs`、Python 3（`segno`、`pillow`、`python-pptx`）；套件從**執行目錄往上**找 `node_modules`，找不到再找 npm 全域（可設 `SKILL_PKG_ROOT`）。依賴請使用者在終端機先裝好，不要在對話中代裝。
+腳本需要 Node 20+（Playwright 不支援 18）、`playwright`（＋Chromium）、`pptxgenjs`、Python 3（`segno`、`pillow`、`python-pptx`）；套件從**執行目錄往上**找 `node_modules`，找不到再找 npm 全域（可設 `SKILL_PKG_ROOT`）。依賴請使用者在終端機先裝好，不要在對話中代裝。
 **固定規則**：開始前先讀 `$SKILL/references/fixed-rules.md`，全程遵守（頁尾署名、課程簡報不得刪頁、醫療用語與文獻引用）。
 
 ## 0. 先問三件事（一次問完）
@@ -45,7 +45,7 @@ description: 用 reveal.js 製作或修改 HTML 簡報（單檔、可離線、�
 ## 3. 互動
 
 - **課堂互動平台**（多數不能 iframe）：互動頁＝掃碼加入 QR＋場次代碼（`.cl-code` 以 localStorage 跨頁同步，範本「範例 8」含完整頁面與腳本；`.cl-code-input` 要 `stopPropagation` 否則 reveal 吃掉按鍵）＋「開啟主持畫面」新分頁按鈕＋學生端截圖。範本以 `example.com` 占位，換成你的平台網址。
-- **觀眾手機即時投票**（現場有穩定網路時）：`references/live-poll/`。Cloudflare Worker＋Durable Object 收票、WebSocket 推到投影片；選擇題顯示百分比、猜數字顯示直方圖與中位數；講者 `A` 揭曉（手機同步顯示答案）、`Shift+R` 清空本題；斷網照樣能揭曉。HTML 寫占位 `<section data-poll-join></section>`、`<section data-poll="id"></section>`，再跑 `node $SKILL/scripts/poll-slides.mjs in.html out-live.html --worker <dir> --url <https://…>`。部署、建帳號前先問；**講者版 HTML 內含 ADMIN_KEY，不可外流**。完整步驟與壓測見 `references/live-poll/README.md`。
+- **觀眾手機即時投票**（現場有穩定網路時）：`references/live-poll/`。Cloudflare Worker＋Durable Object 收票、WebSocket 推到投影片；選擇題顯示百分比、猜數字顯示直方圖與中位數；講者 `A` 揭曉（手機同步顯示答案）、`Shift+R` 清空本題；斷網照樣能揭曉。HTML 寫占位 `<section data-poll-join></section>`、`<section data-poll="id"></section>`，再跑 `node $SKILL/scripts/poll-slides.mjs in.html out-live.html --worker <dir> --url <https://…>`。部署、建帳號前先問；**講者版 HTML 內含 ADMIN_KEY，不可外流**；要公開展示改用 `--polls <polls.json> --sim 60` 模擬模式（不連後端、不含 key）。完整步驟與壓測見 `references/live-poll/README.md`。
 - **互動地圖**（場館、據點、距離）：座標存 JSON，SVG 以經緯度線性投影畫點，點擊顯示名稱與到最近據點的距離、按鈕切換範圍圈；做法見 `references/interactive-pages.md`。
 - **製作技巧頁**（結尾前分享怎麼做的）：格式比較表＋AI 協作清單，內容範例見 `references/interactive-pages.md`。
 - **滑桿對比**（`viz`）：適合「沒有版本控制 vs 有」這類前後對比。

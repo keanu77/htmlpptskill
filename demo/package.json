@@ -1,0 +1,17 @@
+{
+  "name": "htmlpptskill-demo",
+  "private": true,
+  "type": "module",
+  "description": "Live Demo：build 到 ../docs/index.html（GitHub Pages）",
+  "scripts": {
+    "build": "node build.mjs",
+    "qa": "QA_OFFLINE=1 node ../skills/html-slide-deck/scripts/qa-screenshots.mjs ../docs/index.html qa-out"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "reveal.js": "5.2.1"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
+  }
+}

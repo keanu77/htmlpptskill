@@ -1,0 +1,26 @@
+{
+  "event": "htmlpptskill Live Demo",
+  "polls": {
+    "warmup": {
+      "type": "choice",
+      "kicker": "手機即時投票（示範模式）",
+      "title": "你平常用什麼做簡報？",
+      "stem": "正式使用時，觀眾掃 QR 用手機作答；這裡模擬 60 人作答。作答數穩定後按 A 揭曉，Shift+R 重來。",
+      "options": ["PowerPoint／Keynote", "Google 簡報", "HTML（reveal.js 等）", "其他"],
+      "answer": 2,
+      "explain": "這題沒有標準答案，示範揭曉效果：正式場合時，答案會同步推到每一支手機。"
+    },
+    "size": {
+      "type": "number",
+      "kicker": "猜數字（示範模式）",
+      "title": "這份 Demo 整份 HTML 有多大？",
+      "stem": "reveal.js、講者備註外掛、QR、測驗、投票程式全部內嵌在同一個檔案裡。猜猜看幾 KB？",
+      "min": 0,
+      "max": 5000,
+      "unit": "KB",
+      "answer": 0,
+      "bins": [[0, 99], [100, 299], [300, 499], [500, 999], [1000, 1999], [2000, 5000]],
+      "explain": "單一檔案、拔掉網路照樣能播。數字由 build 時實際量測。"
+    }
+  }
+}

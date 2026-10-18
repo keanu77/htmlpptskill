@@ -350,6 +350,7 @@ node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll 
 ```
 
 - 產出的 `index-live.html` 內含講者控制用的 ADMIN_KEY，只放講者電腦。
+- 公開展示用模擬模式：`--polls polls.json --sim 60`，不連後端、不含 key（[Live Demo](https://keanu77.github.io/htmlpptskill/) 第 8、9 頁）。
 - 斷網照樣能播、能揭曉；自動化瀏覽器與 `?print-pdf` 不連線，QA 不受影響。
 - 部署、題目格式、API、壓測：[`live-poll/README.md`](../skills/html-slide-deck/references/live-poll/README.md)。
 
