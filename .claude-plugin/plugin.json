@@ -1,9 +1,18 @@
 {
   "name": "htmlpptskill",
-  "version": "1.2.0",
-  "description": "reveal.js HTML 簡報製作、QA（含 QR 驗證）、講義 PPTX／PDF 輸出，以及簡報特效。",
-  "author": { "name": "Ethan Wu" },
+  "version": "1.3.0",
+  "description": "reveal.js HTML 簡報製作、QA（含 QR 驗證）、講義 PPTX／PDF 輸出、觀眾手機即時投票，以及簡報特效。",
+  "author": {
+    "name": "Ethan Wu"
+  },
   "repository": "https://github.com/keanu77/htmlpptskill",
   "license": "MIT",
-  "keywords": ["reveal.js", "slides", "pptx", "presentation"]
+  "keywords": [
+    "reveal.js",
+    "slides",
+    "pptx",
+    "presentation",
+    "live-poll",
+    "agent-skills"
+  ]
 }
