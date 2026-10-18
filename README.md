@@ -18,7 +18,7 @@ Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。<br>
 <sub>實際講座成品：封面 GSAP 逐字浮現、七張卡片一次翻面、頁內真的能作答的測驗、網站＋repo 雙 QR。54 頁、3 MB、拔掉網路照樣播。</sub>
 
 <p>
-<a href="#30-秒安裝">安裝</a>　·　<a href="#10-分鐘看到第一份成品">10 分鐘上手</a>　·　<a href="#-快捷鍵換場與動畫技巧">快捷鍵、換場與動畫技巧</a>　·　<a href="#疑難排解">疑難排解</a>
+<a href="#30-秒安裝">安裝</a>　·　<a href="#10-分鐘看到第一份成品">10 分鐘上手</a>　·　<a href="#-現場互動手機投票互動地圖">現場互動</a>　·　<a href="#-快捷鍵換場與動畫技巧">快捷鍵、換場與動畫技巧</a>　·　<a href="#疑難排解">疑難排解</a>
 </p>
 
 </div>
@@ -108,6 +108,7 @@ node $SKILL/scripts/print-pdf.mjs index.html handout.pdf               # PDF 講
 QA：qa-screenshots.mjs ─ 截圖、溢出、JS 錯誤、對外請求、QR 逐張解碼比對、montage.png ─ 有問題 exit 1
 交付：index.html（單檔）＋ 講義 PPTX ＋ PDF（＋ 原生可編輯 PPTX）
 效果：html-slide-effects → 加完回頭重跑 QA
+互動：手機投票 poll-slides.mjs（講者版另存）、互動地圖、頁內測驗
 ```
 
 <details>
@@ -118,6 +119,47 @@ QA：qa-screenshots.mjs ─ 截圖、溢出、JS 錯誤、對外請求、QR 逐�
 - `scripts/check.mjs`：頁數對 content.js、溢出、JS 錯誤、對外請求、QR 逐張解碼。
 - `PLAN.md`＋`ROLE-AUTHOR.md`／`ROLE-REVIEWER.md`：想讓兩個 agent 一個主筆一個稽核，角色由你指定。
 </details>
+
+## 📱 現場互動：手機投票、互動地圖
+
+<img src="docs/live-poll.png" width="900" alt="左：投影片即時顯示全場作答比例並揭曉答案；右：觀眾手機同步顯示答案">
+
+<sub>左：投影片即時顯示全場作答比例，講者按 A 揭曉；右：觀眾手機同步顯示答案。2026-10 一場約 150 人的講座實際使用。</sub>
+
+### 觀眾用手機即時作答
+
+頁內測驗只有台上一個人點；要全場一起作答，用 [`references/live-poll/`](skills/html-slide-deck/references/live-poll/README.md)。
+
+| 你要的 | 做法 |
+|---|---|
+| 觀眾不用裝 App、不用登入 | 掃 QR 開網頁作答，匿名、可改答案、不重複計票 |
+| 投影片上即時看到全場答案 | 選擇題顯示百分比，猜數字顯示直方圖與中位數，加入頁顯示在線手機數 |
+| 揭曉時台下也看得到 | 講者按 `A`，投影片標出正解與說明，答案同步推到每支手機；揭曉前手機拿不到答案 |
+| 彩排完要清掉測試票 | 在該題按 `Shift+R` |
+| 會場網路斷了 | 投影片顯示提示並改輪詢；`A` 照樣揭曉 |
+| 人多會不會塞車 | 150 支手機壓測：150 票約 0.2–1.2 秒寫入並推到投影片 |
+
+後端是 Cloudflare Worker＋Durable Object（免費方案即可），部署一次之後只改題目檔。
+
+```html
+<section data-poll-join></section>        <!-- 加入頁：大 QR＋在線手機數 -->
+<section data-poll="warmup"></section>    <!-- 一題一頁，題目定義在 worker/src/polls.json -->
+```
+```bash
+cp -R $SKILL/references/live-poll/worker my-poll && cd my-poll && npm install
+npx wrangler login && npx wrangler secret put ADMIN_KEY && npx wrangler deploy   # 同一把 key 也寫進 .dev.vars
+node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll --url https://slide-poll.<子網域>.workers.dev
+```
+
+產出的 `index-live.html` 內含講者控制用的 ADMIN_KEY，**只放講者電腦**；要分享的版本用原本的 `index.html`。
+
+### 互動地圖與製作技巧頁
+
+- **互動地圖**：點場館顯示項目、最近據點與直線距離，按鈕切換「20 km 圈」「標出 20 km 外」；經緯度投影的 SVG，離線可用。
+- **製作技巧頁**：Q&A 前一頁放 PowerPoint／PDF／HTML 優缺點比較表與 AI 協作清單。
+- **PPTX 轉 HTML 插入互動頁**：以「原 PPTX 第幾頁之後」指定位置，插頁後自動重編頁碼。
+
+程式碼與內容範例：[`references/interactive-pages.md`](skills/html-slide-deck/references/interactive-pages.md)。
 
 ## 🎬 快捷鍵、換場與動畫技巧
 
@@ -473,32 +515,7 @@ show();
 
 </details>
 
-<details>
-<summary><b>4.5 觀眾手機即時投票</b></summary>
-
-頁內測驗只有台上一個人點；要全場一起作答，用 `references/live-poll/`。觀眾掃 QR 用手機作答，投影片即時顯示百分比（選擇題）或直方圖與中位數（猜數字），講者按 `A` 揭曉、答案同步推到每支手機，`Shift+R` 清空本題。後端是 Cloudflare Worker＋Durable Object（免費方案即可），150 支手機壓測通過。
-
-```html
-<section data-poll-join></section>        <!-- 加入頁：大 QR＋在線手機數 -->
-<section data-poll="warmup"></section>    <!-- 題目定義在 worker/src/polls.json -->
-```
-```bash
-node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll --url https://slide-poll.<子網域>.workers.dev
-```
-
-產出的 `index-live.html` 內含講者控制用的 ADMIN_KEY，只放講者電腦。部署、題目格式、API、壓測見 [`live-poll/README.md`](skills/html-slide-deck/references/live-poll/README.md)。
-
-</details>
-
-<details>
-<summary><b>4.6 互動地圖、4.7 製作技巧頁</b></summary>
-
-- **互動地圖**：點場館顯示項目、最近據點與直線距離，按鈕切換範圍圈；經緯度線性投影的 SVG，離線可用。
-- **製作技巧頁**：Q&A 前一頁放 PowerPoint／PDF／HTML 優缺點比較表與 AI 協作清單。
-
-程式碼與內容範例：[`references/interactive-pages.md`](skills/html-slide-deck/references/interactive-pages.md)。
-
-</details>
+> 全場用手機作答、互動地圖、製作技巧頁：見上方 [📱 現場互動](#-現場互動手機投票互動地圖)。
 
 ### 🧪 讓動畫不妨礙 QA、PDF 與無障礙
 
@@ -650,7 +667,7 @@ AGENTS.md、CLAUDE.md              給在本 repo 工作的 agent
 
 Two Agent Skills (open `SKILL.md` format) for building **reveal.js HTML slide decks** with an AI coding agent, plus the scripts that make them trustworthy:
 
-- **html-slide-deck**: outline-first workflow, dark professional template, real screenshots, QR codes, interactive pages, per-slide screenshot QA (overflow, JS errors, external requests, **QR decoded and compared with `data-url`**), export to handout PPTX (notes included), PDF, and native editable PPTX.
+- **html-slide-deck**: outline-first workflow, dark professional template, real screenshots, QR codes, interactive pages, live audience polling from phones (Cloudflare Worker), per-slide screenshot QA (overflow, JS errors, external requests, **QR decoded and compared with `data-url`**), export to handout PPTX (notes included), PDF, and native editable PPTX.
 - **html-slide-effects**: fragments, Auto-Animate, 3D flip cards, GSAP, timer bar, lightbox, scroll view, with reduced-motion and a STATIC switch so QA screenshots and PDFs capture the final state.
 
 Works with Claude Code, OpenAI Codex CLI, Gemini CLI and Grok Build (`./install.sh` detects them). Docs are in Traditional Chinese; the scripts and templates are language-neutral.
