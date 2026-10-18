@@ -1,6 +1,6 @@
 ---
 name: html-slide-deck
-description: 用 reveal.js 製作或修改 HTML 簡報（單檔、可離線、深色專業版型、真實截圖、QR、互動頁），逐頁截圖 QA 並驗證 QR，再輸出講義 PPTX／PDF 或原生可編輯 PPTX。當使用者說「做一份 HTML 簡報」「reveal.js 簡報」「簡報加底圖／截圖／QR」「HTML 簡報轉 PPT／講義／PDF」「離線簡報」時使用。要加動畫特效時搭配 html-slide-effects。
+description: 用 reveal.js 製作或修改 HTML 簡報（單檔、可離線、深色專業版型、真實截圖、QR、互動頁、觀眾手機即時投票），逐頁截圖 QA 並驗證 QR，再輸出講義 PPTX／PDF 或原生可編輯 PPTX。當使用者說「做一份 HTML 簡報」「reveal.js 簡報」「簡報加底圖／截圖／QR」「簡報加互動／現場投票／觀眾用手機作答」「HTML 簡報轉 PPT／講義／PDF」「離線簡報」時使用。要加動畫特效時搭配 html-slide-effects。
 ---
 
 # HTML 簡報（reveal.js）完整流程
@@ -19,7 +19,8 @@ description: 用 reveal.js 製作或修改 HTML 簡報（單檔、可離線、�
 
 ## 1. 大綱 → 確認 → 生成
 
-- 先輸出大綱表（頁碼｜標題｜內容摘要｜標記 [BG]/[SHOT]/[INTERACT]/[VIZ]），**等使用者確認再寫 HTML**。
+- 規劃前讀 `references/design-principles.md`（受眾→結論→敘事結構、統一設計系統、一份來源多種輸出、互動區塊怎麼挑；附現成工具清單）。
+- 先輸出大綱表（頁碼｜標題｜內容摘要｜標記 [BG]/[SHOT]/[INTERACT]/[POLL]/[VIZ]），**等使用者確認再寫 HTML**。
 - **兩種做法，先選一種**：
   - **A 單檔手寫**（≤25 頁、一次交付）：複製 `references/reveal-template.html`，直接寫 `<section>`。範本預設從 CDN 載 reveal.js 5.2；交付前跑 `node $SKILL/scripts/inline-assets.mjs in.html out.html` 內嵌 reveal.js 與圖片（執行目錄要有 `reveal.js` 套件：`npm i reveal.js@5`）。
   - **B 內容／版型分離**（>25 頁、多輪改稿、要離線、要 QR 驗證）：複製 `references/offline-build-template/` 成新專案，填 `PLAN.md`，`content.js` 一頁一個物件（`type` 決定版型、`notes` 為備註），`npm install && npm run all` 產出 `dist/index.html`（reveal.js、CSS、圖片、QR 全內嵌）。範本是 8 頁中性起手；50 頁完整實例在 repo `examples/workshop-2026/`。
@@ -44,6 +45,9 @@ description: 用 reveal.js 製作或修改 HTML 簡報（單檔、可離線、�
 ## 3. 互動
 
 - **課堂互動平台**（多數不能 iframe）：互動頁＝掃碼加入 QR＋場次代碼（`.cl-code` 以 localStorage 跨頁同步，範本「範例 8」含完整頁面與腳本；`.cl-code-input` 要 `stopPropagation` 否則 reveal 吃掉按鍵）＋「開啟主持畫面」新分頁按鈕＋學生端截圖。範本以 `example.com` 占位，換成你的平台網址。
+- **觀眾手機即時投票**（現場有穩定網路時）：`references/live-poll/`。Cloudflare Worker＋Durable Object 收票、WebSocket 推到投影片；選擇題顯示百分比、猜數字顯示直方圖與中位數；講者 `A` 揭曉（手機同步顯示答案）、`Shift+R` 清空本題；斷網照樣能揭曉。HTML 寫占位 `<section data-poll-join></section>`、`<section data-poll="id"></section>`，再跑 `node $SKILL/scripts/poll-slides.mjs in.html out-live.html --worker <dir> --url <https://…>`。部署、建帳號前先問；**講者版 HTML 內含 ADMIN_KEY，不可外流**。完整步驟與壓測見 `references/live-poll/README.md`。
+- **互動地圖**（場館、據點、距離）：座標存 JSON，SVG 以經緯度線性投影畫點，點擊顯示名稱與到最近據點的距離、按鈕切換範圍圈；做法見 `references/interactive-pages.md`。
+- **製作技巧頁**（結尾前分享怎麼做的）：格式比較表＋AI 協作清單，內容範例見 `references/interactive-pages.md`。
 - **滑桿對比**（`viz`）：適合「沒有版本控制 vs 有」這類前後對比。
 - 頁面裡放**真的能用的東西**（可作答的小測驗、可拉的滑桿）比截圖更有說服力；純 JS、離線可用。
 

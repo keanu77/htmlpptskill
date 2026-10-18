@@ -1,6 +1,8 @@
 # HTML 簡報技巧整理（來源：X 使用者分享，2026-10-17 整理）
 
 > 以下為 X 上的使用者分享，非官方文件；工具未經實測，GitHub 星數為貼文所述。
+>
+> 前兩節已整理進 skill：`skills/html-slide-deck/references/design-principles.md`（安裝時一起裝，SKILL.md 第 1 步引用）；修改時兩處一起改。
 
 ## 流程與設計原則
 - 先規劃受眾、結論與敘事結構，再生成頁面；依內容選用圖表、表格、時間線、轉場，輸出可離線分享的單檔 HTML。來源：https://x.com/leowu_love/status/2082124253437247863

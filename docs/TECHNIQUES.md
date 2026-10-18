@@ -7,7 +7,7 @@
 1. [播放快捷鍵](#1-播放快捷鍵)
 2. [換場（Transitions）](#2-換場transitions)
 3. [動畫技巧](#3-動畫技巧)：逐步出現、Auto-Animate、3D 翻卡、卡片牆飛入、GSAP 逐字、Three.js 粒子
-4. [講者工具](#4-講者工具)：Spotlight 聚光燈、計時條、點圖放大、頁內測驗
+4. [講者工具](#4-講者工具)：Spotlight 聚光燈、計時條、點圖放大、頁內測驗、手機即時投票、互動地圖、製作技巧頁
 5. [讓動畫不妨礙 QA、PDF 與無障礙](#5-讓動畫不妨礙-qapdf-與無障礙)
 6. [怎麼挑：穩重、中間、驚豔](#6-怎麼挑穩重中間驚豔)
 7. [常見的坑](#7-常見的坑)
@@ -337,6 +337,32 @@ show();
 
 醫療或專業題目：題目與解釋要自己審過，參考文獻不確定就標「待查證」。
 
+### 4.5 觀眾手機即時投票
+
+頁內測驗（4.4）只有台上一個人點；要全場一起作答，用 `skills/html-slide-deck/references/live-poll/`：觀眾掃 QR 用手機作答，投影片即時顯示百分比或直方圖，講者按 `A` 揭曉、答案同步推到手機，`Shift+R` 清空本題。後端是 Cloudflare Worker＋Durable Object，150 支手機實測通過。
+
+```html
+<section data-poll-join></section>        <!-- 加入頁：大 QR＋在線手機數 -->
+<section data-poll="warmup"></section>    <!-- 題目定義在 worker/src/polls.json -->
+```
+```bash
+node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll --url https://slide-poll.<子網域>.workers.dev
+```
+
+- 產出的 `index-live.html` 內含講者控制用的 ADMIN_KEY，只放講者電腦。
+- 斷網照樣能播、能揭曉；自動化瀏覽器與 `?print-pdf` 不連線，QA 不受影響。
+- 部署、題目格式、API、壓測：[`live-poll/README.md`](../skills/html-slide-deck/references/live-poll/README.md)。
+
+### 4.6 互動地圖
+
+場館、據點、距離這類空間論點，做成可點的 SVG 地圖：點場館顯示項目、最近據點與直線距離，按鈕切換「20 km 圈」與「標出 20 km 外」。經緯度線性投影、純前端、離線可用。完整程式碼：[`interactive-pages.md`](../skills/html-slide-deck/references/interactive-pages.md#互動地圖點據點看離中繼站多遠)。
+
+最容易踩的坑：據點標記蓋住旁邊的場館點，點不到。據點先畫、場館後畫，並給據點 `pointer-events:none`。
+
+### 4.7 製作技巧頁
+
+在 Q&A 前一頁分享「這份簡報怎麼做的」：左邊 PowerPoint／PDF／HTML 的優缺點比較表，右邊 AI 協作清單。實際內容見 [`interactive-pages.md`](../skills/html-slide-deck/references/interactive-pages.md#製作技巧頁結尾前分享這份簡報怎麼做的)。
+
 ---
 
 ## 5. 讓動畫不妨礙 QA、PDF 與無障礙
@@ -411,3 +437,5 @@ html.static .flip .inner, html.static .reveal .fragment, html.static .wall .subs
 | 外掛鍵位沒反應或行為怪 | 撞到內建鍵（`B` 黑屏、`S` 講者、`O` 總覽）；換鍵 |
 | 插入 script 後講者視窗壞掉（`RevealNotes is not defined`） | notes.js 原始碼裡也有 `</body>`；程式插入時找**最後一個** `</body>` |
 | 3D 粒子頁卡頓 | 降 `count`、`setPixelRatio` 上限 1.5、離開封面就 `stop()` |
+| 投票頁截圖被判溢出 | 隱藏的答案框用 `translateY` 往下推會撐出捲動範圍；改用 `scale` |
+| 手機投票票數一直是 0 | 測試用的 voter 代號太短被格式檢查擋掉（需 8–64 字元） |

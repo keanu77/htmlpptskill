@@ -1,0 +1,35 @@
+{
+  "event": "〈講座名稱〉｜現場互動",
+  "polls": {
+    "warmup": {
+      "type": "choice",
+      "kicker": "暖身",
+      "title": "你平常用什麼做簡報？",
+      "stem": "選最常用的一個。",
+      "options": ["PowerPoint／Keynote", "Google 簡報", "HTML（reveal.js 等）", "其他"],
+      "answer": 2,
+      "explain": "這題沒有標準答案；揭曉時會把「HTML」標成綠色，示範揭曉效果。換成你自己的題目。"
+    },
+    "case-1": {
+      "type": "choice",
+      "kicker": "情境 1／1",
+      "title": "〈情境題標題〉",
+      "stem": "〈題幹：一段情境描述，最後問「你會怎麼做？」〉",
+      "options": ["〈選項 A〉", "〈選項 B〉", "〈選項 C〉"],
+      "answer": 1,
+      "explain": "〈解釋：為什麼是 B；專業題目要自己審過〉"
+    },
+    "guess": {
+      "type": "number",
+      "kicker": "猜數字",
+      "title": "〈猜一個數字的題目〉",
+      "stem": "〈例：這次活動一共服務了多少人次？〉",
+      "min": 0,
+      "max": 5000,
+      "unit": "人次",
+      "answer": 218,
+      "bins": [[0, 99], [100, 199], [200, 299], [300, 499], [500, 999], [1000, 5000]],
+      "explain": "〈揭曉後的說明〉"
+    }
+  }
+}

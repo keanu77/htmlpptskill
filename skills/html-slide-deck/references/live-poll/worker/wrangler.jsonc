@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // 部署後網址是 https://<name>.<你的 workers 子網域>.workers.dev
+  "name": "slide-poll",
+  "main": "src/index.js",
+  // 不能晚於你本機 wrangler 內建 workerd 支援的日期，否則 wrangler dev 起不來
+  "compatibility_date": "2026-08-20",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "durable_objects": { "bindings": [{ "name": "ROOM", "class_name": "Room" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }]
+}

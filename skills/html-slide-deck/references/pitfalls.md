@@ -82,3 +82,11 @@ prs.save('out.pptx')
 - `render-slides.mjs` 預設直接輸出 JPEG（1280×720 ×1.5），不必再轉檔。
 - `?print-pdf` 預設 `pdfSeparateFragments:true`，54 頁會印成 79 頁；在 initialize 設 false。
 - 用 python-pptx 抓 PPTX 裡的 QR 圖片、再用 jsqr 解碼，可還原使用者手動加的 QR 網址（`skill 目錄自帶的 node_modules` 有 jsqr／pngjs）。
+
+## 互動頁與手機投票（2026-10 講座）
+- 手機投票全套在 `live-poll/`（README 有部署、API、壓測與踩雷）；地圖、製作技巧頁、PPTX 轉 HTML 插頁在 `interactive-pages.md`。
+- 講者版 HTML 內嵌 ADMIN_KEY：commit 前 `grep -c <key>` 確認 staged 內容為 0；`.dev.vars` 一律 gitignore。
+- `wrangler.jsonc` 的 `compatibility_date` 晚於本機 wrangler 內建 workerd 支援範圍時 `wrangler dev` 直接起不來，往前調即可。
+- 插頁後投影片上印的頁碼會錯位：載入時依實際順序重編，不要回頭改 PPTX。
+- 互動頁的進場動畫不要套到「未揭曉時隱藏」的元素上（例如答案框），否則動畫結束後它會被顯示出來。
+- SVG 地圖上大標記（據點）會攔截點擊：先畫、`pointer-events:none`。
