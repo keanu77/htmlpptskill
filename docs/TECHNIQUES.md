@@ -339,7 +339,7 @@ show();
 
 ### 4.5 觀眾手機即時投票
 
-頁內測驗（4.4）只有台上一個人點；要全場一起作答，用 `skills/html-slide-deck/references/live-poll/`：觀眾掃 QR 用手機作答，投影片即時顯示百分比或直方圖，講者按 `A` 揭曉、答案同步推到手機，`Shift+R` 清空本題。後端是 Cloudflare Worker＋Durable Object，150 支手機實測通過。
+頁內測驗（4.4）只有台上一個人點；要全場一起作答，用 `skills/html-slide-deck/references/live-poll/`：觀眾掃 QR 用手機作答，投影片即時顯示百分比或直方圖，講者按 `A` 揭曉、答案同步推到手機，`Shift+R` 清空本題。後端是 Cloudflare Worker＋Durable Object，學會演講現場 60 人使用，另以 150 支模擬手機壓測通過。
 
 ```html
 <section data-poll-join></section>        <!-- 加入頁：大 QR＋在線手機數 -->
