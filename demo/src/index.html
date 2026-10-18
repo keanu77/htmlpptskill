@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<!-- htmlpptskill Live Demo 原始檔。build：cd demo && npm install && npm run build → docs/index.html（GitHub Pages）。
+     這份就是照 skill 做的：reveal-template.html 的 tokens／class ＋ docs/TECHNIQUES.md 的效果程式碼 ＋ live-poll 模擬模式。 -->
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>htmlpptskill Live Demo</title>
+  <meta name="description" content="一句話讓 AI 做出 reveal.js 簡報：可離線播放、QR 自動驗證、觀眾手機即時投票。這份 Demo 就是用它做的。" />
+  <meta property="og:title" content="htmlpptskill Live Demo" />
+  <meta property="og:description" content="一句話讓 AI 做出 reveal.js 簡報：可離線播放、QR 自動驗證、觀眾手機即時投票。" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/keanu77/htmlpptskill/main/docs/social-preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/night.css" />
+  <style>
+    :root {
+      --bg: #0B1F2A; --card: #13303C; --card2: #1A3E4C; --line: #2A5262;
+      --text: #F3F7F8; --muted: #A3B8C0; --dim: #6F8791;
+      --amber: #F2B84B; --teal: #3FC1B7; --coral: #E8846B; --green: #6FCF97;
+    }
+    .reveal-viewport { background: var(--bg); }
+    .reveal { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', 'Segoe UI', sans-serif; font-size: 30px; color: var(--text); }
+    .reveal h1, .reveal h2, .reveal h3 { font-family: inherit; font-weight: 700; letter-spacing: -0.01em; text-transform: none; color: var(--text); text-shadow: none; }
+    .reveal h2 { font-size: 1.45em; margin-bottom: 0.5em; }
+    .reveal .slides section { text-align: left; }
+    .reveal .slide-number { background: transparent; color: var(--dim); font-size: 14px; }
+    .reveal a { color: var(--teal); }
+    .reveal code { font-family: Menlo, 'SF Mono', monospace; font-size: 0.8em; background: rgba(255,255,255,0.08); padding: 0 6px; border-radius: 6px; color: var(--teal); }
+    .chip { display: inline-block; font-size: 0.42em; font-weight: 700; padding: 4px 16px; border-radius: 999px; background: var(--card2); color: var(--teal); margin-bottom: 0.9em; letter-spacing: 0.04em; }
+    .chip.amber { background: transparent; border: 1.5px solid var(--amber); color: var(--amber); }
+    .lead { font-size: 0.72em; color: var(--muted); margin: 0 0 0.6em 0; line-height: 1.5; }
+    .note { background: var(--card2); border-radius: 14px; padding: 14px 22px; font-size: 0.56em; color: var(--muted); margin-top: 0.8em; line-height: 1.6; }
+    .note b { color: var(--text); }
+    .grid { display: grid; gap: 18px; margin-top: 0.4em; }
+    .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+    .card { background: var(--card); border-radius: 16px; padding: 20px 22px; }
+    .card .t { font-weight: 700; font-size: 0.72em; margin-bottom: 8px; }
+    .card .d { font-size: 0.54em; color: var(--muted); line-height: 1.6; }
+    .card .k { font-size: 1.1em; font-weight: 900; color: var(--teal); display: block; margin-bottom: 4px; }
+    .card.amber .k, .card.amber .t { color: var(--amber); } .card.coral .k, .card.coral .t { color: var(--coral); }
+    .card.green .k, .card.green .t { color: var(--green); } .card.teal .k, .card.teal .t { color: var(--teal); }
+    .keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 0.6em; }
+    .keys div { background: var(--card); border-radius: 14px; padding: 14px 16px; font-size: 0.5em; color: var(--muted); line-height: 1.5; }
+    .keys kbd { display: inline-block; min-width: 34px; text-align: center; font: 700 0.95em Menlo, monospace; color: var(--bg); background: var(--amber); border-radius: 8px; padding: 2px 8px; margin-right: 8px; }
+    .keys b { color: var(--text); }
+
+    /* 封面：純 CSS 逐字浮現 */
+    .cover h1 { font: 800 2.9em/1.05 'Helvetica Neue', Arial, sans-serif; margin: 0.15em 0 0.25em; }
+    .cover h1 span { display: inline-block; opacity: 0; transform: translateY(28px); animation: up .6s cubic-bezier(.2,.7,.2,1) forwards; }
+    .cover h1 .ppt { color: var(--amber); }
+    .cover .sub { font-size: 0.95em; font-weight: 600; line-height: 1.5; }
+    .cover .cover-hint { font-size: 0.5em; color: var(--dim); margin-top: 1.6em; }
+    @keyframes up { to { opacity: 1; transform: none; } }
+
+    /* 流程（fragment 逐步出現） */
+    .flow { display: grid; grid-template-columns: 1fr 34px 1fr 34px 1fr 34px 1fr 34px 1fr; align-items: center; margin-top: 0.6em; }
+    .flow .card { min-height: 190px; padding: 18px 16px; }
+    .flow .card .t { font-size: 0.66em; } .flow .card .d { font-size: 0.52em; }
+    .flow .arrow { text-align: center; color: var(--dim); font-size: 0.9em; }
+
+    /* Auto-Animate */
+    .qa-box { background: var(--card); border: 2px solid var(--teal); border-radius: 18px; padding: 22px 28px; }
+    .qa-box .t { color: var(--teal); font-weight: 800; font-size: 0.9em; }
+    .qa-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .qa-list div { background: var(--card2); border-radius: 12px; padding: 12px 16px; font-size: 0.52em; line-height: 1.45; }
+    .qa-list div b { color: var(--green); margin-right: 8px; }
+
+    /* 3D 翻卡（TECHNIQUES 3.3） */
+    .reveal .fragment.custom.flipall { opacity: 1; visibility: inherit; }
+    .flip { perspective: 1100px; height: 210px; cursor: pointer; }
+    .flip .inner { position: relative; width: 100%; height: 100%; transition: transform .9s cubic-bezier(.4,.2,.2,1); transform-style: preserve-3d; }
+    .flip .front, .flip .back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; }
+    .flip .front { background: #2C1E1E; } .flip .front .t { color: var(--coral); }
+    .flip .back { transform: rotateY(180deg); background: #10322F; } .flip .back .t { color: var(--teal); }
+    .flipall.visible .flip:not(.off) .inner, .flip.on .inner { transform: rotateY(180deg); }
+    .flip:nth-child(2) .inner { transition-delay: .08s } .flip:nth-child(3) .inner { transition-delay: .16s } .flip:nth-child(4) .inner { transition-delay: .24s }
+
+    /* 頁內測驗（TECHNIQUES 4.4） */
+    .quiz { max-width: 980px; }
+    .quiz p { font-size: 0.8em; font-weight: 700; margin: 0 0 0.5em; }
+    .quiz button { display: block; width: 100%; text-align: left; font: inherit; font-size: 0.6em; color: var(--text); background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 12px 18px; margin-bottom: 10px; cursor: pointer; }
+    .quiz button:hover:not([disabled]) { border-color: var(--amber); }
+    .quiz button.ok { border-color: var(--green); background: #10322F; } .quiz button.bad { border-color: var(--coral); background: #2C1E1E; }
+    .quiz .fb { font-size: 0.55em; color: var(--muted); min-height: 1.6em; margin-top: 6px; line-height: 1.5; }
+    .quiz .sc { font-size: 2.4em; font-weight: 900; color: var(--amber); }
+    .quiz .again { width: auto; display: inline-block; font-size: 0.5em; margin-top: 10px; }
+
+    /* 滑桿對比（reveal-template viz） */
+    .viz { position: relative; height: 340px; border-radius: 14px; overflow: hidden; margin-top: 0.3em; }
+    .viz .pane { position: absolute; inset: 0; padding: 22px 26px; box-sizing: border-box; font-size: 0.56em; }
+    .viz .before { background: #2C1E1E; } .viz .after { background: #10322F; clip-path: inset(0 100% 0 0); }
+    .viz .divider { position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, transparent, var(--teal), transparent); box-shadow: 0 0 12px var(--teal); pointer-events: none; }
+    .viz .lbl { position: absolute; top: 10px; font-weight: 700; font-size: 0.85em; padding: 3px 10px; border-radius: 8px; }
+    .viz .lbl.l { left: 12px; background: var(--coral); color: var(--bg); } .viz .lbl.r { right: 12px; background: var(--teal); color: var(--bg); }
+    .viz ul { list-style: none; margin: 40px 0 0; padding: 0; font-size: 1em; }
+    .viz li { padding: 6px 0; }
+    .viz .before li { color: #F0C9C9; } .viz .after li { color: #CDEFEA; font-family: Menlo, monospace; font-size: 0.9em; }
+    .viz .after li b { color: var(--green); }
+    .slider { width: 100%; margin-top: 12px; accent-color: var(--teal); }
+    .hint { font-size: 0.48em; color: var(--dim); text-align: center; margin-top: 4px; }
+
+    /* QR 卡 */
+    .qrcard { background: #fff; border-radius: 16px; padding: 12px 12px 8px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
+    .qrcard .qrsvg { display: block; width: 100%; height: auto; }
+    .qrcard .qrl { color: #0B1F2A; font-family: Menlo, monospace; font-size: 0.4em; font-weight: 700; margin-top: 4px; word-break: break-all; line-height: 1.3; }
+    .install { background: #071820; border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; font: 0.5em/1.7 Menlo, monospace; color: #CDEFEA; white-space: pre; overflow: hidden; }
+    .install .c { color: var(--dim); }
+
+    @media (prefers-reduced-motion: reduce) { .cover h1 span { animation: none; opacity: 1; transform: none; } .flip .inner { transition: none; } }
+    html.static .cover h1 span { animation: none; opacity: 1; transform: none; }
+    html.static .flip .inner { transition: none; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1 封面 -->
+    <section class="cover" data-transition="zoom">
+      <div class="chip">LIVE DEMO · 這份簡報就是用 htmlpptskill 做的</div>
+      <h1 data-letters>htmlpptskill</h1>
+      <div class="sub">一句話讓 AI 做出 HTML 簡報<br>可離線播放、QR 自動驗證、觀眾手機即時投票</div>
+      <div class="cover-hint">電腦按 → 翻頁　·　手機往下捲動</div>
+      <aside class="notes">這是講者備註。播放時按 S 會開講者視窗，看得到備註、下一頁與計時。</aside>
+    </section>
+
+    <!-- 2 播放快捷鍵 -->
+    <section>
+      <div class="chip">先試試看</div>
+      <h2>你可以這樣操作</h2>
+      <div class="keys">
+        <div class="fragment fade-up"><kbd>→</kbd><b>下一步</b><br>有些頁面會一項一項出現</div>
+        <div class="fragment fade-up"><kbd>S</kbd><b>講者視窗</b><br>備註、下一頁、計時器</div>
+        <div class="fragment fade-up"><kbd>O</kbd><b>總覽</b><br>所有投影片縮圖</div>
+        <div class="fragment fade-up"><kbd>F</kbd><b>全螢幕</b><br>上台時用</div>
+        <div class="fragment fade-up"><kbd>B</kbd><b>黑屏</b><br>請觀眾看你</div>
+        <div class="fragment fade-up"><kbd>G</kbd><b>跳頁</b><br>輸入頁碼</div>
+        <div class="fragment fade-up"><kbd>A</kbd><b>揭曉答案</b><br>投票頁專用</div>
+        <div class="fragment fade-up"><kbd>?</kbd><b>全部快捷鍵</b><br>reveal.js 內建說明</div>
+      </div>
+      <div class="note fragment">這一頁示範的是 <b>fragment</b>：按一下出一項，聽眾不會先把整頁讀完。</div>
+      <aside class="notes">fragment 是最便宜、最該先用的效果。</aside>
+    </section>
+
+    <!-- 3 流程 -->
+    <section>
+      <div class="chip">流程</div>
+      <h2>從一句話到交付</h2>
+      <div class="flow">
+        <div class="card amber fragment fade-up" data-fragment-index="1"><span class="k">1</span><div class="t">說一句話</div><div class="d">「幫我做一份 20 頁的講座簡報」</div></div>
+        <div class="arrow fragment" data-fragment-index="2">→</div>
+        <div class="card teal fragment fade-up" data-fragment-index="2"><span class="k">2</span><div class="t">先對大綱</div><div class="d">AI 列出頁碼、標題、要放的圖，等你確認</div></div>
+        <div class="arrow fragment" data-fragment-index="3">→</div>
+        <div class="card teal fragment fade-up" data-fragment-index="3"><span class="k">3</span><div class="t">產生 HTML</div><div class="d">reveal.js 單檔，圖片、QR 全內嵌</div></div>
+        <div class="arrow fragment" data-fragment-index="4">→</div>
+        <div class="card green fragment fade-up" data-fragment-index="4"><span class="k">4</span><div class="t">逐頁 QA</div><div class="d">截圖、溢出、JS 錯誤、QR 解碼</div></div>
+        <div class="arrow fragment" data-fragment-index="5">→</div>
+        <div class="card coral fragment fade-up" data-fragment-index="5"><span class="k">5</span><div class="t">交付</div><div class="d">HTML ＋ 講義 PPTX／PDF</div></div>
+      </div>
+      <aside class="notes">卡片和前面的箭頭共用同一個 fragment index，就會一起出現。</aside>
+    </section>
+
+    <!-- 4–5 Auto-Animate -->
+    <section data-auto-animate>
+      <div class="chip">Auto-Animate</div>
+      <h2>QA 到底檢查什麼？</h2>
+      <div class="qa-box" data-id="qa" style="width:520px;margin:60px auto 0;text-align:center"><div class="t">逐頁 QA</div></div>
+      <aside class="notes">下一頁這個框會「長」成完整清單：兩頁都加 data-auto-animate，相同 data-id 的元素自動補間。</aside>
+    </section>
+    <section data-auto-animate>
+      <div class="chip">Auto-Animate</div>
+      <h2>QA 到底檢查什麼？</h2>
+      <div class="qa-box" data-id="qa"><div class="t">逐頁 QA：有問題就 exit 1</div>
+        <div class="qa-list">
+          <div><b>✓</b>每一頁截圖，拼成一張總覽圖</div>
+          <div><b>✓</b>文字有沒有超出版面</div>
+          <div><b>✓</b>有沒有 JavaScript 錯誤</div>
+          <div><b>✓</b>每一頁有沒有講者備註</div>
+          <div><b>✓</b>每張 QR 解碼，和網址比對</div>
+          <div><b>✓</b>離線模式：任何對外請求都算失敗</div>
+        </div>
+      </div>
+      <aside class="notes">QA 腳本：node $SKILL/scripts/qa-screenshots.mjs index.html out/</aside>
+    </section>
+
+    <!-- 6 3D 翻卡 -->
+    <section>
+      <div class="chip">3D 翻卡</div>
+      <h2>講者會遇到的事 → 這個 skill 的做法</h2>
+      <div class="grid g4 flipall fragment custom">
+        <div class="flip"><div class="inner"><div class="front card"><div class="t">QR 印錯</div><div class="d">台下掃到 404</div></div>
+          <div class="back card"><div class="t">逐張解碼</div><div class="d">QA 把每張 QR 截圖解碼，和 data-url 比對</div></div></div></div>
+        <div class="flip"><div class="inner"><div class="front card"><div class="t">會場沒網路</div><div class="d">字型、圖、外掛全掛</div></div>
+          <div class="back card"><div class="t">單檔內嵌</div><div class="d">reveal.js、圖片、QR 全塞進一個 HTML</div></div></div></div>
+        <div class="flip"><div class="inner"><div class="front card"><div class="t">文字溢出</div><div class="d">播到一半才發現</div></div>
+          <div class="back card"><div class="t">逐頁截圖</div><div class="d">一張總覽圖看完全部頁面</div></div></div></div>
+        <div class="flip"><div class="inner"><div class="front card"><div class="t">主辦要 PPTX</div><div class="d">你只有 HTML</div></div>
+          <div class="back card"><div class="t">一行輸出</div><div class="d">講義 PPTX（含備註）與 PDF</div></div></div></div>
+      </div>
+      <div class="note">按 → 四張一起翻面；點單張可以翻回來。</div>
+      <aside class="notes">翻卡的關鍵是 .reveal .fragment.custom.flipall { opacity:1 }，否則正面在點擊前是隱形的。</aside>
+    </section>
+
+    <!-- 7 頁內測驗 -->
+    <section>
+      <div class="chip">頁內測驗</div>
+      <h2>點點看：這是真的能作答的測驗</h2>
+      <div class="quiz" id="quiz1"></div>
+      <aside class="notes">純 JavaScript、離線可用。比截圖更有說服力。</aside>
+    </section>
+
+    <!-- 8–9 手機投票（模擬模式） -->
+    <section data-poll="warmup"></section>
+    <section data-poll="size"></section>
+
+    <!-- 10 滑桿對比 -->
+    <section>
+      <div class="chip">滑桿對比</div>
+      <h2>同一份 AI 簡報，有沒有 QA</h2>
+      <div class="viz">
+        <div class="pane before"><span class="lbl l">沒有 QA</span>
+          <ul><li>第 7 頁標題被切掉一半</li><li>結尾 QR 指向舊網址</li><li>會場 Wi-Fi 一斷，字型和圖全掉</li><li>第 12 頁的動畫卡住</li><li>主辦單位：「可以給 PPT 嗎？」</li></ul></div>
+        <div class="pane after" id="viz-after"><span class="lbl r">有 QA</span>
+          <ul><li><b>✓</b> 溢出：0 頁</li><li><b>✓</b> QR：3 / 3 解碼相符</li><li><b>✓</b> 離線：對外請求 0 個</li><li><b>✓</b> JS 錯誤：0</li><li><b>✓</b> 講義：deck.pptx、deck.pdf</li></ul></div>
+        <div class="divider" id="viz-divider"></div>
+      </div>
+      <input id="viz-slider" class="slider" type="range" min="0" max="100" value="0" />
+      <div class="hint">← 拉動滑桿 →</div>
+      <aside class="notes">右邊是 qa-screenshots.mjs 實際會報告的項目。</aside>
+    </section>
+
+    <!-- 11 安裝 -->
+    <section>
+      <div class="chip">開始用</div>
+      <h2>30 秒安裝</h2>
+      <div class="grid" style="grid-template-columns: 1fr 260px; gap: 40px; align-items: center">
+        <div>
+          <div class="install"><span class="c"># 下載並安裝到你用的 AI coding agent</span>
+git clone https://github.com/keanu77/htmlpptskill
+cd htmlpptskill && ./install.sh
+
+<span class="c"># 重開 CLI 後直接說</span>
+「做一份 HTML 簡報」</div>
+          <div class="note">支援 <b>Claude Code、Codex CLI、Gemini CLI、Grok Build</b>。需要 Node 18+；QA 用 Playwright，講義用 Python。</div>
+        </div>
+        <div class="qrcard" data-url="https://github.com/keanu77/htmlpptskill">__QR__<div class="qrl">github.com/keanu77/htmlpptskill</div></div>
+      </div>
+      <aside class="notes">這張 QR 會被 QA 解碼比對 data-url。</aside>
+    </section>
+
+    <!-- 12 結尾 -->
+    <section class="cover" data-transition="zoom">
+      <div class="chip amber">MIT 授權 · 歡迎給顆星</div>
+      <h1 data-letters>謝謝觀看</h1>
+      <div class="sub">原始碼：<a href="https://github.com/keanu77/htmlpptskill">github.com/keanu77/htmlpptskill</a></div>
+      <div class="cover-hint">這份 Demo 的原始檔在 repo 的 demo/src/index.html</div>
+      <aside class="notes">Q&amp;A。</aside>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+<script>
+  // STATIC：QA 截圖與 PDF 抓最終狀態（TECHNIQUES 5）
+  const STATIC = navigator.webdriver || location.search.indexOf('print-pdf') >= 0;
+  if (STATIC) document.documentElement.classList.add('static');
+
+  // 封面逐字：每個字包一層 span、錯開 70ms
+  document.querySelectorAll('[data-letters]').forEach(h => {
+    h.innerHTML = [...h.textContent].map((c, i) =>
+      `<span class="${i >= 4 && i < 7 && h.textContent === 'htmlpptskill' ? 'ppt' : ''}" style="animation-delay:${i * 70}ms">${c}</span>`).join('');
+  });
+
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0.06,
+    hash: true, transition: STATIC ? 'none' : 'fade', transitionSpeed: 'fast', backgroundTransition: 'fade',
+    center: true, progress: true, controls: true, slideNumber: 'c/t', pdfSeparateFragments: false,
+    autoAnimateDuration: STATIC ? 0 : 0.9, autoAnimateEasing: 'cubic-bezier(.4,.2,.2,1)',
+    plugins: [ RevealNotes ]
+  });
+
+  // 封面逐字：回到封面時重播
+  Reveal.on('slidechanged', e => e.currentSlide.querySelectorAll('[data-letters] span').forEach(s => {
+    s.style.animation = 'none'; void s.offsetWidth; s.style.animation = '';
+  }));
+
+  // 翻卡：點單張翻回
+  document.querySelectorAll('.flip').forEach(c => c.addEventListener('click', () => {
+    c.parentNode.classList.contains('visible') ? c.classList.toggle('off') : c.classList.toggle('on');
+  }));
+
+  // 滑桿對比
+  (function () {
+    const slider = document.getElementById('viz-slider'), after = document.getElementById('viz-after'), divider = document.getElementById('viz-divider');
+    const apply = v => { after.style.clipPath = `inset(0 ${100 - v}% 0 0)`; divider.style.left = v + '%'; };
+    slider.addEventListener('input', function () { apply(+this.value); });
+    slider.addEventListener('keydown', e => e.stopPropagation());
+    apply(STATIC ? 55 : 0);
+  })();
+
+  // 頁內測驗
+  (function () {
+    const Q = [
+      { q: '會場沒有網路，哪一種簡報最可能整份照常播放？', o: ['用 CDN 載入外掛的 HTML', '內嵌所有資源的單檔 HTML', '雲端簡報的分享連結'], a: 1, e: '單檔內嵌不依賴任何外部請求；QA 的離線模式就是檢查這件事。' },
+      { q: '投影片上的 QR，怎樣才算「驗證過」？', o: ['肉眼看起來正常', '用手機掃一張試試', '每張解碼後和預期網址比對'], a: 2, e: '一份簡報常有好幾張 QR，逐張解碼比對才不會漏。' },
+      { q: '要讓聽眾不要先把整頁讀完，最簡單的做法是？', o: ['fragment 逐步出現', '把字縮小', '加 3D 粒子背景'], a: 0, e: 'fragment 零成本，最該先用。' },
+    ];
+    let i = 0, score = 0; const box = document.getElementById('quiz1'), L = 'ABC';
+    function show() {
+      if (i >= Q.length) {
+        box.innerHTML = `<div class="sc">${score} / ${Q.length}</div><button class="again">再玩一次</button>`;
+        box.querySelector('.again').onclick = () => { i = 0; score = 0; show(); };
+        return;
+      }
+      const q = Q[i];
+      box.innerHTML = `<p>${i + 1}. ${q.q}</p>` + q.o.map((o, k) => `<button data-k="${k}">${L[k]}. ${o}</button>`).join('') + '<div class="fb"></div>';
+      box.querySelectorAll('button').forEach(b => b.onclick = () => {
+        const k = +b.dataset.k; if (k === q.a) score++;
+        box.querySelectorAll('button').forEach(x => { x.disabled = true; if (+x.dataset.k === q.a) x.classList.add('ok'); });
+        if (k !== q.a) b.classList.add('bad');
+        box.querySelector('.fb').textContent = (k === q.a ? '答對。' : `正解是 ${L[q.a]}。`) + q.e;
+        setTimeout(() => { i++; show(); }, 2200);
+      });
+    }
+    show();
+  })();
+</script>
+</body>
+</html>

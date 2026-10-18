@@ -2,7 +2,13 @@
 
 # htmlpptskill
 
-**跟 AI 說一句「做一份 HTML 簡報」，拿到能離線播、QR 驗過、還附講義 PPTX／PDF 的成品。**
+**跟 AI 說一句「做一份 HTML 簡報」，拿到能離線播、QR 驗過、觀眾能用手機投票、還附講義 PPTX／PDF 的成品。**
+
+### [▶ 打開 Live Demo，直接操作](https://keanu77.github.io/htmlpptskill/)
+
+<sub>這份 12 頁的 Demo 就是用這個 skill 做的：逐步出現、Auto-Animate、3D 翻卡、頁內測驗、手機投票（模擬 60 人）、滑桿對比。279 KB 單檔，電腦按 → 翻頁。</sub>
+
+[English README](README.en.md)　·　[安全說明](SECURITY.md)
 
 reveal.js 簡報製作流程，包成兩個 Agent Skill。<br>
 Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。<br>
@@ -10,12 +16,16 @@ Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。<br>
 
 [![CI](https://github.com/keanu77/htmlpptskill/actions/workflows/ci.yml/badge.svg)](https://github.com/keanu77/htmlpptskill/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](LICENSE)
-![Node 18+](https://img.shields.io/badge/Node-18%2B-3FC1B7)
+![Node 20+](https://img.shields.io/badge/Node-20%2B-3FC1B7)
 ![Agent Skills](https://img.shields.io/badge/Agent%20Skills-SKILL.md-F2B84B)
+
+<img src="docs/demo.gif" width="760" alt="一句話 → Demo 操作 → 逐頁 QA → HTML、PDF、PPTX 三種交付">
+
+<sub>45 秒看完流程：一句話、逐步出現、Auto-Animate、翻卡、測驗、手機投票、QA、三種交付。</sub>
 
 <img src="docs/showcase.png" width="900" alt="封面逐字浮現、3D 翻卡、頁內可作答的測驗、雙 QR 工具頁">
 
-<sub>實際講座成品：封面 GSAP 逐字浮現、七張卡片一次翻面、頁內真的能作答的測驗、網站＋repo 雙 QR。54 頁、3 MB、拔掉網路照樣播。</sub>
+<sub>另一份實際講座成品：封面 GSAP 逐字浮現、七張卡片一次翻面、頁內真的能作答的測驗、網站＋repo 雙 QR。54 頁、3 MB、拔掉網路照樣播。</sub>
 
 <p>
 <a href="#30-秒安裝">安裝</a>　·　<a href="#10-分鐘看到第一份成品">10 分鐘上手</a>　·　<a href="#-現場互動手機投票互動地圖">現場互動</a>　·　<a href="#-快捷鍵換場與動畫技巧">快捷鍵、換場與動畫技巧</a>　·　<a href="#疑難排解">疑難排解</a>
@@ -151,7 +161,13 @@ npx wrangler login && npx wrangler secret put ADMIN_KEY && npx wrangler deploy  
 node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll --url https://slide-poll.<子網域>.workers.dev
 ```
 
-產出的 `index-live.html` 內含講者控制用的 ADMIN_KEY，**只放講者電腦**；要分享的版本用原本的 `index.html`。
+產出的 `index-live.html` 內含講者控制用的 ADMIN_KEY，**只放講者電腦**；要分享的版本用原本的 `index.html`，詳見 [SECURITY.md](SECURITY.md)。
+
+要公開展示（像 Live Demo）就用模擬模式：不連後端、不含 key，進到投票頁自動跑出作答過程，`A` 一樣能揭曉。
+
+```bash
+node $SKILL/scripts/poll-slides.mjs index.html demo.html --polls polls.json --sim 60
+```
 
 ### 互動地圖與製作技巧頁
 
@@ -634,6 +650,9 @@ examples/
   workshop-2026/content.js        50 頁工作坊完整內容
   pptx-edits-back-to-html.py      講者在 PPTX 手改後回灌 HTML＋全部效果的實例（見 examples/README.md）
 docs/TECHNIQUES.md                快捷鍵、換場、動畫技巧參考（附程式碼）
+docs/index.html                   Live Demo 成品（GitHub Pages；原始檔在 demo/，cd demo && npm i && npm run build）
+demo/                             Live Demo 原始檔：src/index.html、polls.json、build.mjs
+README.en.md、SECURITY.md         英文說明、安全說明（ADMIN_KEY、QA 會執行 JS、漏洞回報）
 docs/html-slides-tips-from-x-2026-10-17.md  X 使用者分享的 HTML 簡報技巧與工具整理（含來源連結）
 docs/*.png                        成果圖
 .claude-plugin/                   Claude Code plugin／marketplace 設定
@@ -644,6 +663,7 @@ AGENTS.md、CLAUDE.md              給在本 repo 工作的 agent
 
 | 現象 | 處理 |
 |---|---|
+| `Playwright requires Node.js 20 or higher` | Node 太舊。Ubuntu 24.04 的 `apt install nodejs` 是 18，改用 nvm 或 nodejs.org 的 Node 20+ |
 | `找不到套件 playwright` | 在有 `node_modules` 的專案目錄執行，或 `npm i -g playwright`，或設 `SKILL_PKG_ROOT` |
 | `缺 jsqr／pngjs` | 到 skill 目錄 `npm install`；或 `QA_SKIP_QR=1` 明確略過 |
 | Chromium 沒下載 | `npx playwright install chromium`；已有 Chromium 就設 `CHROMIUM_PATH` |

@@ -13,7 +13,7 @@ SKILLS=(html-slide-deck html-slide-effects)
 TARGET=all; PROJECT=0; FORCE=0
 for a in "$@"; do case "$a" in --project) PROJECT=1;; --force) FORCE=1;; claude|codex|gemini|grok|all) TARGET=$a;; *) echo "未知參數 $a" >&2; exit 1;; esac; done
 
-node -e 'process.exit(+process.versions.node.split(".")[0] >= 18 ? 0 : 1)' 2>/dev/null || echo "⚠ 需要 Node 18+（腳本用 ES modules 與 top-level await）"
+node -e 'process.exit(+process.versions.node.split(".")[0] >= 20 ? 0 : 1)' 2>/dev/null || echo "⚠ 需要 Node 20+（Playwright 不支援 Node 18；Ubuntu 24.04 的 apt nodejs 是 18，請用 nvm 或 nodejs.org）"
 
 install_to() {  # $1 = 目的目錄
   local dest="$1"; mkdir -p "$dest"

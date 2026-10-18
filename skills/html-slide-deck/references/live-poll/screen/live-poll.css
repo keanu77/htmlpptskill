@@ -19,6 +19,8 @@
 .lp-revealed .lp-opt:not(.ok){opacity:.5}
 .lp-side{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
 .lp-side .qrcard{width:220px}
+.lp-sim{width:220px;padding:22px 12px;border-radius:16px;border:2px dashed var(--line);color:var(--muted);font-size:18px;line-height:1.6}
+.lp-sim b{color:var(--amber);font-size:22px}
 .lp-count{font-size:22px;margin-top:8px}
 .lp-count b{display:block;font-size:68px;color:var(--amber);line-height:1;font-variant-numeric:tabular-nums}
 .lp-phones-line{font-size:18px;color:var(--muted)}

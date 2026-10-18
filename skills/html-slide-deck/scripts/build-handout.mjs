@@ -5,6 +5,7 @@ const pptxgen = requirePkg('pptxgenjs');
 import { readFileSync, existsSync } from 'node:fs';
 const [dir, out, author = ''] = process.argv.slice(2);
 if (!dir || !out) { console.error('usage: build-handout.mjs <renderDir> <out.pptx> [author]'); process.exit(1); }
+if (!existsSync(`${dir}/meta.json`)) { console.error(`找不到 ${dir}/meta.json：先跑 render-slides.mjs <index.html> ${dir}，並確認它成功。`); process.exit(1); }
 const raw = JSON.parse(readFileSync(`${dir}/meta.json`, 'utf8'));
 const meta = Array.isArray(raw) ? { slides: raw, bg: 'rgb(11,31,42)', width: 1280, height: 720 } : raw;  // 舊版 meta.json 相容
 const hex = (meta.bg.match(/\d+/g) || [11, 31, 42]).slice(0, 3).map(n => (+n).toString(16).padStart(2, '0')).join('').toUpperCase();

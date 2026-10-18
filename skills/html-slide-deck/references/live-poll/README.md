@@ -25,7 +25,7 @@ live-poll/
 
 ## 1. 部署（一次）
 
-需要 Cloudflare 帳號（免費方案即可）與 Node 18+。部署前先問使用者。
+需要 Cloudflare 帳號（免費方案即可）與 Node 20+。部署前先問使用者。
 
 ```bash
 cp -R $SKILL/references/live-poll/worker my-poll && cd my-poll
@@ -72,6 +72,13 @@ node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll 
 - ADMIN_KEY 取環境變數 `ADMIN_KEY` 或 `my-poll/.dev.vars`，**會寫進 `index-live.html`**：這份只放講者電腦，不上傳、不寄出、不 commit。要分享給觀眾的版本用沒跑過這支腳本的 `index.html`。
 - 做法 B（content.js）：讓 build.js 對某個 type 輸出同樣的占位 section，build 完再跑這支。
 - 從 PPTX 轉出的 HTML 也一樣：在轉檔程式插頁時插入占位 section。插頁後若投影片上印有頁碼，要重編。
+
+### 模擬模式（公開 Demo、彩排用）
+
+```bash
+node $SKILL/scripts/poll-slides.mjs index.html demo.html --polls my-poll/src/polls.json --sim 60
+```
+不連後端、不需要 key，產出檔可以公開。進到投票頁會在幾秒內跑出 60 人的作答（選擇題約一半選正解，猜數字散在答案附近），`A` 揭曉、`Shift+R` 重跑；右側 QR 換成「示範模式」說明框。repo 的 Live Demo 就是這樣做的。
 
 ## 4. 現場操作
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **Live Demo**（GitHub Pages）：`demo/` 原始檔 → `docs/index.html`，12 頁示範逐步出現、Auto-Animate、3D 翻卡、頁內測驗、手機投票、滑桿對比；build 時量實際檔案大小當猜數字題的答案。
+- 手機投票新增**模擬模式**：`poll-slides.mjs --polls <polls.json> --sim [人數]`，不連後端、不含 key，可公開；`live-poll.js` 依 `POLL_CFG.sim` 自動跑出作答過程。
+- 新增 `README.en.md`（英文完整說明）、`SECURITY.md`（漏洞回報、ADMIN_KEY 處理與輪替、QA 會執行 JS）；README 開頭放 Live Demo 連結與 45 秒流程 GIF（`docs/demo.gif`）。
+- 乾淨環境安裝測試（OrbStack Ubuntu 24.04，照 README 從 clone 到離線 QA、講義、PDF、做法 B 全程）：發現 **Node 18 跑不了 Playwright**，需求改為 Node 20+（README 徽章、install.sh 檢查、SKILL.md、engines），疑難排解補上；`build-handout.mjs` 找不到 render 目錄時改成明確錯誤訊息。
+
 ## 1.3.0 — 2026-10-18
 
 - 新增觀眾手機即時投票 `skills/html-slide-deck/references/live-poll/`：Cloudflare Worker＋Durable Object 後端（手機頁、題目 JSON、WebSocket 推播、斷線輪詢）、投影片端 `screen/live-poll.js`／`.css`、`load-test.mjs`（150 支手機壓測）；新腳本 `scripts/poll-slides.mjs` 把占位 section 換成加入頁與投票頁並注入講者端程式。源自 2026-10 學會演講的做法（現場 60 人使用）。
