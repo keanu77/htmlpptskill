@@ -13,6 +13,8 @@ jobs:
         run: |
           for f in skills/html-slide-deck/scripts/*.mjs skills/html-slide-deck/references/*.mjs skills/html-slide-deck/references/offline-build-template/scripts/*.mjs; do node --check "$f"; done
           node --check skills/html-slide-deck/references/offline-build-template/build.js
+          for f in skills/html-slide-deck/references/live-poll/*.mjs skills/html-slide-deck/references/live-poll/screen/*.js skills/html-slide-deck/references/live-poll/worker/src/*.js; do node --check "$f"; done
+          node -e "JSON.parse(require('fs').readFileSync('skills/html-slide-deck/references/live-poll/worker/src/polls.json','utf8'))"
           python -m py_compile skills/html-slide-deck/scripts/montage.py examples/pptx-edits-back-to-html.py
           bash -n install.sh skills/html-slide-deck/scripts/*.sh
           pip install ruff && ruff check skills/html-slide-deck/scripts/montage.py examples/pptx-edits-back-to-html.py

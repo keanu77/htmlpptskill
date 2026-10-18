@@ -1,0 +1,53 @@
+/* 手機即時投票：投影片端。沿用 reveal-template.html 的 tokens（--card --line --text --muted --amber --teal --green --coral） */
+.reveal section.lp{text-align:left}
+.lp-wrap{display:grid;grid-template-columns:1fr 250px;gap:36px;align-items:start;font-size:22px;color:var(--text)}
+.lp-kicker{font-size:18px;font-weight:700;color:var(--amber);letter-spacing:.04em}
+.reveal .lp h2{font-size:38px;line-height:1.25;margin:4px 0 14px}
+.lp-stem{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 20px;line-height:1.55;margin-bottom:16px}
+.lp-opts{display:flex;flex-direction:column;gap:12px}
+.lp-opt{position:relative;display:grid;grid-template-columns:40px 1fr 80px;align-items:center;column-gap:14px;
+  padding:10px 16px;border-radius:14px;background:var(--card);border:2px solid var(--line);overflow:hidden;transition:border-color .4s,opacity .4s}
+.lp-opt>i{position:relative;z-index:1;width:40px;height:40px;border-radius:50%;background:var(--amber);color:var(--bg);
+  font-style:normal;font-weight:800;display:grid;place-items:center}
+.lp-opt-t{position:relative;z-index:1;line-height:1.35}
+.lp-pct{position:relative;z-index:1;text-align:right;font-size:28px;font-variant-numeric:tabular-nums}
+.lp-bar{position:absolute;inset:0;pointer-events:none}
+.lp-bar span{display:block;height:100%;width:0;background:rgba(63,193,183,.22);transition:width .6s ease}
+.lp-revealed .lp-opt.ok{border-color:var(--green)}
+.lp-revealed .lp-opt.ok>i{background:var(--green)}
+.lp-revealed .lp-opt.ok .lp-bar span{background:rgba(111,207,151,.3)}
+.lp-revealed .lp-opt:not(.ok){opacity:.5}
+.lp-side{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.lp-side .qrcard{width:220px}
+.lp-count{font-size:22px;margin-top:8px}
+.lp-count b{display:block;font-size:68px;color:var(--amber);line-height:1;font-variant-numeric:tabular-nums}
+.lp-phones-line{font-size:18px;color:var(--muted)}
+.lp-net{font-size:15px;color:var(--coral);min-height:1.4em}
+.lp-hint{font-size:15px;color:var(--dim);margin-top:6px}
+.lp-revealed .lp-hint{visibility:hidden}
+.lp-answer{margin-top:14px;padding:14px 20px;border-radius:14px;background:var(--card2);border-left:6px solid var(--green);
+  opacity:0;transform:scale(.97);transform-origin:left top;transition:opacity .5s,transform .5s}
+.lp-answer-h{font-size:22px;font-weight:700;color:var(--green)}
+.lp-answer-b{font-size:19px;line-height:1.5;margin-top:4px;color:var(--muted)}
+.lp-revealed .lp-answer{opacity:1;transform:none}
+/* 猜數字：直方圖 */
+.lp-hist{height:230px;display:flex;align-items:flex-end;gap:14px}
+.lp-bin{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%}
+.lp-bin-bar{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative}
+.lp-bin-bar span{display:block;width:100%;height:0;background:var(--teal);border-radius:8px 8px 0 0;transition:height .6s ease}
+.lp-bin-bar b{position:absolute;bottom:6px;font-size:20px;color:var(--bg);font-variant-numeric:tabular-nums}
+.lp-bin-l{font-size:17px;color:var(--muted)}
+.lp-bin.ok .lp-bin-bar span{background:var(--green)}
+.lp-median{font-size:22px;margin-top:10px}
+.lp-median b{font-size:32px;color:var(--amber);margin-left:8px}
+/* 加入頁 */
+.lp-join{display:grid;grid-template-columns:420px 1fr;gap:56px;align-items:center;font-size:24px}
+.lp-join .qrcard{width:420px}
+.lp-join-url{font-size:30px;font-weight:700;color:var(--amber);overflow-wrap:anywhere;margin:8px 0 18px}
+.lp-join-n{font-size:28px}
+.lp-join-n b{font-size:92px;color:var(--amber);margin:0 10px;font-variant-numeric:tabular-nums}
+.lp-join-s{font-size:20px;color:var(--muted);line-height:1.6;margin-top:18px}
+.lp-dot{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--dim);vertical-align:middle}
+.lp-live .lp-dot{background:var(--green);animation:lpPulse 1.6s infinite}
+@keyframes lpPulse{70%{box-shadow:0 0 0 12px rgba(111,207,151,0)}0%{box-shadow:0 0 0 0 rgba(111,207,151,.6)}}
+@media (prefers-reduced-motion:reduce){.lp-bar span,.lp-bin-bar span,.lp-answer{transition:none}.lp-live .lp-dot{animation:none}}
