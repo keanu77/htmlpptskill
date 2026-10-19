@@ -1,5 +1,5 @@
 // 共用：解析 playwright / pptxgenjs / jsqr 等套件。
-// 順序：SKILL_PKG_ROOT 環境變數 → skill 目錄自帶 node_modules（只給 jsqr/pngjs 這類小套件）→ 執行目錄往上 → npm 全域。
+// 順序：SKILL_PKG_ROOT 環境變數 → skill 目錄自帶 node_modules（只給 jsqr/pngjs/qrcode 這類小套件）→ 執行目錄往上 → npm 全域。
 import { createRequire } from 'node:module';
 import { execSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
@@ -7,7 +7,7 @@ import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const SKILL_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const SKILL_LOCAL = new Set(['jsqr', 'pngjs']);  // 其他套件不從 skill 目錄取，避免撿到缺瀏覽器的舊版 playwright
+const SKILL_LOCAL = new Set(['jsqr', 'pngjs', 'qrcode']);  // 其他套件不從 skill 目錄取，避免撿到缺瀏覽器的舊版 playwright
 
 function fromDir(dir, name) {
   return existsSync(join(dir, 'node_modules', name)) ? createRequire(join(dir, 'package.json'))(name) : null;

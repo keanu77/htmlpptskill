@@ -11,7 +11,7 @@
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
   const pollSec = id => document.querySelector(`section[data-poll="${id}"]`);
   const results = {};
-  let current = null, ws = null, wsRetry = 0, poller = null;
+  let current = null, ws = null, wsRetry = 0, poller = null, navSeq = 0;
 
   /* ---------------------------------------------------------------- 模擬模式 */
   const SIM = CFG.sim ? (CFG.sim === true ? 60 : CFG.sim) : 0;
@@ -24,7 +24,8 @@
     } else {
       const sorted = [...v].sort((a, b) => a - b);
       out.counts = def.bins.map(([lo, hi]) => v.filter(x => x >= lo && x <= hi).length);
-      out.median = sorted.length ? sorted[Math.floor((sorted.length - 1) / 2)] : null;
+      const mid = sorted.length >> 1;                 // 偶數筆取中間兩筆平均
+      out.median = !sorted.length ? null : sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
       out.close = v.filter(x => Math.abs(x - def.answer) <= def.answer * 0.2).length;
     }
     return out;
@@ -42,7 +43,6 @@
     const def = CFG.polls[id];
     if (sims[id]) return render(id);
     sims[id] = { votes: [], timer: null };
-    $$('.lp-phones').forEach(el => { el.textContent = SIM; });
     sims[id].timer = setInterval(() => {
       const s = sims[id];
       for (let k = 0; k < 1 + Math.floor(Math.random() * 4) && s.votes.length < SIM; k++) s.votes.push(simVote(def));
@@ -67,10 +67,12 @@
       return await r.json();
     } finally { clearTimeout(timer); }
   }
-  const control = body => api('/api/control', {
+  // 控制請求排隊依序送出，快速換頁時「開題」不會晚於「離開」抵達後端
+  let ctlChain = Promise.resolve();
+  const control = body => (ctlChain = ctlChain.catch(() => {}).then(() => api('/api/control', {
     method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + CFG.key },
     body: JSON.stringify(body),
-  });
+  })));
 
   function setNet(ok, msg) {
     document.documentElement.classList.toggle('lp-live', ok);
@@ -153,12 +155,13 @@
     $$('.ok', sec).forEach(el => el.classList.remove('ok'));
   }
 
-  async function enterPoll(id) {
+  async function enterPoll(id, seq) {
     current = id;
     if (SIM) return simStart(id);
     try {
       const res = await api('/api/results?poll=' + id);
       results[id] = res;
+      if (seq !== navSeq) return;                         // 等待期間已換頁：不要再開這題
       if (res.phase !== 'revealed') {
         const r = await control({ poll: id, phase: 'open' });
         results[id] = r.results;
@@ -187,8 +190,8 @@
   }
 
   function onShow(sec) {
-    const id = sec && sec.dataset.poll;
-    if (id) return enterPoll(id);
+    const id = sec && sec.dataset.poll, seq = ++navSeq;
+    if (id) return enterPoll(id, seq);
     if (current) { current = null; if (!SIM) control({ poll: null }).catch(() => {}); }
   }
 
@@ -200,7 +203,7 @@
   }, true);
 
   function start() {
-    if (SIM) setNet(true);
+    if (SIM) { setNet(true); $$('.lp-phones').forEach(el => { el.textContent = SIM; }); }
     else if ($$('section[data-poll], .lp-joinslide').length) connect();
     Reveal.on('slidechanged', e => onShow(e.currentSlide));
     onShow(Reveal.getCurrentSlide());

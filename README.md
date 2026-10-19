@@ -156,8 +156,8 @@ QA：qa-screenshots.mjs ─ 截圖、溢出、JS 錯誤、對外請求、QR 逐�
 <section data-poll="warmup"></section>    <!-- 一題一頁，題目定義在 worker/src/polls.json -->
 ```
 ```bash
-cp -R $SKILL/references/live-poll/worker my-poll && cd my-poll && npm install
-npx wrangler login && npx wrangler secret put ADMIN_KEY && npx wrangler deploy   # 同一把 key 也寫進 .dev.vars
+cp -R $SKILL/references/live-poll/worker my-poll
+(cd my-poll && npm install && npx wrangler login && npx wrangler secret put ADMIN_KEY && npx wrangler deploy)   # 同一把 key 也寫進 my-poll/.dev.vars
 node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll --url https://slide-poll.<子網域>.workers.dev
 ```
 

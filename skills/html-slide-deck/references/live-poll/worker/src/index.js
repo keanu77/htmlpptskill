@@ -4,6 +4,7 @@
 import { DurableObject } from "cloudflare:workers";
 import POLLS from "./polls.json";
 import { phonePage } from "./phone.js";
+import { median } from "./stats.js";
 
 const DEFAULT_ROOM = "default";   // 同一個 Worker 要給不同場次用，設 vars.ROOM_NAME
 const PHASES = ["closed", "open", "revealed"];
@@ -77,7 +78,7 @@ export class Room extends DurableObject {
     } else {
       const vals = rows.map(r => Number(r.value)).sort((a, b) => a - b);
       out.counts = def.bins.map(([lo, hi]) => vals.filter(v => v >= lo && v <= hi).length);
-      out.median = vals.length ? vals[Math.floor((vals.length - 1) / 2)] : null;
+      out.median = median(vals);
       const tol = def.answer * 0.2;
       out.close = vals.filter(v => Math.abs(v - def.answer) <= tol).length;
     }
