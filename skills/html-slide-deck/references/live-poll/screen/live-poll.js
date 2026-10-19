@@ -67,12 +67,14 @@
       return await r.json();
     } finally { clearTimeout(timer); }
   }
-  // 控制請求排隊依序送出，快速換頁時「開題」不會晚於「離開」抵達後端
+  // 控制請求排隊依序送出，快速換頁時「開題」不會晚於「離開」抵達後端。
+  // 換頁指令帶 seq：輪到時若已換過頁就略過（回傳 null），斷線後只送最新狀態，不會重播積壓的舊題。
   let ctlChain = Promise.resolve();
-  const control = body => (ctlChain = ctlChain.catch(() => {}).then(() => api('/api/control', {
-    method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + CFG.key },
-    body: JSON.stringify(body),
-  })));
+  const control = (body, seq) => (ctlChain = ctlChain.catch(() => {}).then(() =>
+    seq !== undefined && seq !== navSeq ? null : api('/api/control', {
+      method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + CFG.key },
+      body: JSON.stringify(body),
+    })));
 
   function setNet(ok, msg) {
     document.documentElement.classList.toggle('lp-live', ok);
@@ -163,11 +165,10 @@
       results[id] = res;
       if (seq !== navSeq) return;                         // 等待期間已換頁：不要再開這題
       if (res.phase !== 'revealed') {
-        const r = await control({ poll: id, phase: 'open' });
+        const r = await control({ poll: id, phase: 'open' }, seq);
+        if (!r) return;                                   // 排隊期間已換頁
         results[id] = r.results;
-      } else {
-        await control({ poll: id, phase: 'revealed' });     // 回到已揭曉的題：讓手機也顯示答案
-      }
+      } else if (!await control({ poll: id, phase: 'revealed' }, seq)) return;   // 回到已揭曉的題：讓手機也顯示答案
       render(id);
     } catch (e) {
       setNet(false, '連不到投票伺服器（按 A 仍可揭曉）');
@@ -192,7 +193,7 @@
   function onShow(sec) {
     const id = sec && sec.dataset.poll, seq = ++navSeq;
     if (id) return enterPoll(id, seq);
-    if (current) { current = null; if (!SIM) control({ poll: null }).catch(() => {}); }
+    if (current) { current = null; if (!SIM) control({ poll: null }, seq).catch(() => {}); }
   }
 
   // capture 階段攔截，避免和 reveal.js 內建鍵衝突；只在投票頁生效
