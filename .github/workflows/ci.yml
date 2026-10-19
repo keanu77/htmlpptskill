@@ -17,6 +17,7 @@ jobs:
           grep -q 'POLL_CFG={"sim"' docs/index.html && ! grep -q '"key":' docs/index.html   # Live Demo 必須是模擬模式、不含 key
           for f in skills/html-slide-deck/references/live-poll/*.mjs skills/html-slide-deck/references/live-poll/screen/*.js skills/html-slide-deck/references/live-poll/worker/src/*.js; do node --check "$f"; done
           node -e "JSON.parse(require('fs').readFileSync('skills/html-slide-deck/references/live-poll/worker/src/polls.json','utf8'))"
+          (cd skills/html-slide-deck/references/live-poll/worker && node --test test/stats.test.js)
           python -m py_compile skills/html-slide-deck/scripts/montage.py examples/pptx-edits-back-to-html.py
           bash -n install.sh skills/html-slide-deck/scripts/*.sh
           pip install ruff && ruff check skills/html-slide-deck/scripts/montage.py examples/pptx-edits-back-to-html.py

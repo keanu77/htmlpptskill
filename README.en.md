@@ -103,8 +103,8 @@ Used by 60 people at once at a medical conference talk in October 2026, and load
 <section data-poll="warmup"></section>    <!-- one question per slide, defined in worker/src/polls.json -->
 ```
 ```bash
-cp -R $SKILL/references/live-poll/worker my-poll && cd my-poll && npm install
-npx wrangler login && npx wrangler secret put ADMIN_KEY && npx wrangler deploy   # put the same key in .dev.vars
+cp -R $SKILL/references/live-poll/worker my-poll
+(cd my-poll && npm install && npx wrangler login && npx wrangler secret put ADMIN_KEY && npx wrangler deploy)   # put the same key in my-poll/.dev.vars
 node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll --url https://slide-poll.<subdomain>.workers.dev
 ```
 

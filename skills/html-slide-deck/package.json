@@ -1,10 +1,11 @@
 {
   "name": "html-slide-deck-skill",
   "private": true,
-  "description": "QA 用的純 JS 小套件（QR 解碼）。playwright／pptxgenjs 由專案或全域提供。",
+  "description": "純 JS 小套件：QA 的 QR 解碼（jsqr/pngjs）、poll-slides 的 QR 產生（qrcode）。playwright／pptxgenjs 由專案或全域提供。",
   "dependencies": {
     "jsqr": "^1.4.0",
-    "pngjs": "^7.0.0"
+    "pngjs": "^7.0.0",
+    "qrcode": "^1.5.4"
   },
   "engines": {
     "node": ">=20"

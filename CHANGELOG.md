@@ -6,6 +6,7 @@
 - 手機投票新增**模擬模式**：`poll-slides.mjs --polls <polls.json> --sim [人數]`，不連後端、不含 key，可公開；`live-poll.js` 依 `POLL_CFG.sim` 自動跑出作答過程。
 - 新增 `README.en.md`（英文完整說明）、`SECURITY.md`（漏洞回報、ADMIN_KEY 處理與輪替、QA 會執行 JS）；README 開頭放 Live Demo 連結與 45 秒流程 GIF（`docs/demo.gif`）。
 - 乾淨環境安裝測試（OrbStack Ubuntu 24.04，照 README 從 clone 到離線 QA、講義、PDF、做法 B 全程）：發現 **Node 18 跑不了 Playwright**，需求改為 Node 20+（README 徽章、install.sh 檢查、SKILL.md、engines），疑難排解補上；`build-handout.mjs` 找不到 render 目錄時改成明確錯誤訊息。
+- 修正 PR #3／#4 的 Codex 審查意見：數字題中位數偶數筆改取中間兩筆平均（抽出 `worker/src/stats.js` 並加 `node --test` 測試，CI 一併執行）；投影片端快速換頁不再重開已離開的題目（控制請求排隊＋換頁序號）；手機頁回前景時不會多開一條 WebSocket；模擬模式開在加入頁時就顯示模擬人數；`qrcode` 改為 skill 自帶套件，照文件安裝即可跑 `poll-slides.mjs`；README 部署指令改用子 shell，不會停在 `my-poll` 裡；Live Demo 安裝頁改為 Node 20+。
 
 ## 1.3.0 — 2026-10-18
 

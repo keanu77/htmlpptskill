@@ -34,6 +34,7 @@ npx wrangler login
 openssl rand -hex 24 | tee /dev/stderr | npx wrangler secret put ADMIN_KEY
 printf 'ADMIN_KEY=%s\n' '<上一行印出的 key>' > .dev.vars && chmod 600 .dev.vars
 npx wrangler deploy                           # 印出 https://slide-poll.<子網域>.workers.dev
+cd ..                                         # 回到簡報目錄，下面的 --worker my-poll 才找得到
 ```
 
 - `.dev.vars` 已在 `.gitignore`，**不要 commit**；`wrangler dev` 本機測試也讀它。
@@ -68,7 +69,7 @@ npx wrangler deploy                           # 印出 https://slide-poll.<子�
 node $SKILL/scripts/poll-slides.mjs index.html index-live.html --worker my-poll --url https://slide-poll.<子網域>.workers.dev
 ```
 
-- 腳本把占位換成完整投票頁（每頁右側 QR 都有 `data-url`，QA 會解碼比對），並在**最後一個** `</body>` 前注入樣式、設定與 `live-poll.js`。需要 npm `qrcode`。
+- 腳本把占位換成完整投票頁（每頁右側 QR 都有 `data-url`，QA 會解碼比對），並在**最後一個** `</body>` 前注入樣式、設定與 `live-poll.js`。需要 npm `qrcode`：skill 目錄自帶（`install.sh` 或在 skill 目錄 `npm install` 會裝好）。
 - ADMIN_KEY 取環境變數 `ADMIN_KEY` 或 `my-poll/.dev.vars`，**會寫進 `index-live.html`**：這份只放講者電腦，不上傳、不寄出、不 commit。要分享給觀眾的版本用沒跑過這支腳本的 `index.html`。
 - 做法 B（content.js）：讓 build.js 對某個 type 輸出同樣的占位 section，build 完再跑這支。
 - 從 PPTX 轉出的 HTML 也一樣：在轉檔程式插頁時插入占位 section。插頁後若投影片上印有頁碼，要重編。

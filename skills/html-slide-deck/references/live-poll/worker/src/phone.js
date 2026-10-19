@@ -133,17 +133,21 @@ async function send(value) {
 
 function apply(s) { if (s && s.type === "state") { state = s; render(); } }
 
-let ws = null, retry = 0, pollTimer = null;
+let ws = null, retry = 0, pollTimer = null, retryTimer = null;
 function connect() {
+  clearTimeout(retryTimer); retryTimer = null;       // 回到前景時先取消排定的重連，避免開兩條 socket
+  if (ws && ws.readyState < 2) return;               // 已在連線中或已連上
+  let sock;
   try {
-    ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws?role=phone");
+    sock = ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws?role=phone");
   } catch (e) { return fallback(); }
-  ws.onopen = () => { retry = 0; conn.textContent = "已連線"; clearInterval(pollTimer); pollTimer = null; };
-  ws.onmessage = e => { if (e.data !== "pong") apply(JSON.parse(e.data)); };
-  ws.onclose = () => {
+  sock.onopen = () => { retry = 0; conn.textContent = "已連線"; clearInterval(pollTimer); pollTimer = null; };
+  sock.onmessage = e => { if (e.data !== "pong") apply(JSON.parse(e.data)); };
+  sock.onclose = () => {
+    if (ws !== sock) return;                         // 舊 socket 晚到的 close
     conn.textContent = "重新連線中…";
     fallback();
-    setTimeout(connect, Math.min(15000, 1000 * 2 ** retry++));
+    retryTimer = setTimeout(connect, Math.min(15000, 1000 * 2 ** retry++));
   };
 }
 function fallback() {
