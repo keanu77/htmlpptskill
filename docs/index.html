@@ -621,7 +621,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
 <div class="lp-side"><div class="lp-sim">示範模式<br><b>模擬 60 人作答</b><br>正式使用時這裡是加入 QR</div><div class="lp-count"><b class="lp-total">0</b> 人作答</div>
 <div class="lp-phones-line"><span class="lp-dot"></span><b class="lp-phones">0</b> 支手機在線</div><div class="lp-net"></div>
 <div class="lp-hint">按 A 揭曉</div></div></div>
-<aside class="notes">請大家猜一個數字，看分布與中位數後按 A 揭曉。答案 279 KB。單一檔案、拔掉網路照樣能播。數字由 build 時實際量測。（彩排後按 Shift+R 清空這題）</aside></section>
+<aside class="notes">請大家猜一個數字，看分布與中位數後按 A 揭曉。答案 281 KB。單一檔案、拔掉網路照樣能播。數字由 build 時實際量測。（彩排後按 Shift+R 清空這題）</aside></section>
 
     <!-- 10 滑桿對比 -->
     <section>
@@ -804,7 +804,7 @@ cd htmlpptskill && ./install.sh
 @keyframes lpPulse{70%{box-shadow:0 0 0 12px rgba(111,207,151,0)}0%{box-shadow:0 0 0 0 rgba(111,207,151,.6)}}
 @media (prefers-reduced-motion:reduce){.lp-bar span,.lp-bin-bar span,.lp-answer{transition:none}.lp-live .lp-dot{animation:none}}
 </style>
-<script>window.POLL_CFG={"sim":60,"polls":{"warmup":{"type":"choice","kicker":"手機即時投票（示範模式）","title":"你平常用什麼做簡報？","stem":"正式使用時，觀眾掃 QR 用手機作答；這裡模擬 60 人作答。作答數穩定後按 A 揭曉，Shift+R 重來。","options":["PowerPoint／Keynote","Google 簡報","HTML（reveal.js 等）","其他"],"answer":2,"explain":"這題沒有標準答案，示範揭曉效果：正式場合時，答案會同步推到每一支手機。"},"size":{"type":"number","kicker":"猜數字（示範模式）","title":"這份 Demo 整份 HTML 有多大？","stem":"reveal.js、講者備註外掛、QR、測驗、投票程式全部內嵌在同一個檔案裡。猜猜看幾 KB？","min":0,"max":5000,"unit":"KB","answer":279,"bins":[[0,99],[100,299],[300,499],[500,999],[1000,1999],[2000,5000]],"explain":"單一檔案、拔掉網路照樣能播。數字由 build 時實際量測。"}},"event":"htmlpptskill Live Demo"};</script>
+<script>window.POLL_CFG={"sim":60,"polls":{"warmup":{"type":"choice","kicker":"手機即時投票（示範模式）","title":"你平常用什麼做簡報？","stem":"正式使用時，觀眾掃 QR 用手機作答；這裡模擬 60 人作答。作答數穩定後按 A 揭曉，Shift+R 重來。","options":["PowerPoint／Keynote","Google 簡報","HTML（reveal.js 等）","其他"],"answer":2,"explain":"這題沒有標準答案，示範揭曉效果：正式場合時，答案會同步推到每一支手機。"},"size":{"type":"number","kicker":"猜數字（示範模式）","title":"這份 Demo 整份 HTML 有多大？","stem":"reveal.js、講者備註外掛、QR、測驗、投票程式全部內嵌在同一個檔案裡。猜猜看幾 KB？","min":0,"max":5000,"unit":"KB","answer":281,"bins":[[0,99],[100,299],[300,499],[500,999],[1000,1999],[2000,5000]],"explain":"單一檔案、拔掉網路照樣能播。數字由 build 時實際量測。"}},"event":"htmlpptskill Live Demo"};</script>
 <script>/* 手機即時投票：投影片端（講者電腦）。需要 window.POLL_CFG = { url, key, polls }，由 scripts/poll-slides.mjs 注入。
    進到投票頁自動開題；離開投票頁手機回到「等下一題」。
    講者鍵：A 揭曉、Shift+R 清空本題（彩排後用）。網路斷了照樣能按 A 顯示答案。
@@ -819,6 +819,7 @@ cd htmlpptskill && ./install.sh
   const pollSec = id => document.querySelector(`section[data-poll="${id}"]`);
   const results = {};
   let current = null, ws = null, wsRetry = 0, poller = null, navSeq = 0;
+  let navDone = 0, navTry = 0, navTimer = null, navWait = 0, navBad = false;   // 後端已確認的換頁序號；換頁重送的退避狀態
 
   /* ---------------------------------------------------------------- 模擬模式 */
   const SIM = CFG.sim ? (CFG.sim === true ? 60 : CFG.sim) : 0;
@@ -897,7 +898,7 @@ cd htmlpptskill && ./install.sh
     if (OFFLINE) return setNet(false, '離線模式：按 A 仍可揭曉');
     try { ws = new WebSocket(CFG.url.replace(/^http/, 'ws') + '/ws?role=screen'); }
     catch (e) { return startPolling(); }
-    ws.onopen = () => { wsRetry = 0; setNet(true); stopPolling(); };
+    ws.onopen = () => { wsRetry = 0; setNet(true); stopPolling(); navResendNow(); };
     ws.onmessage = e => { if (e.data !== 'pong') onMessage(JSON.parse(e.data)); };
     ws.onclose = () => {
       setNet(false, '連線中斷，重試中…（按 A 仍可揭曉）');
@@ -906,6 +907,28 @@ cd htmlpptskill && ./install.sh
     };
   }
   setInterval(() => { if (ws && ws.readyState === 1) ws.send('ping'); }, 25000);
+
+  window.addEventListener('online', () => navResendNow());
+
+  /* 換頁狀態（開題／離開）沒送到後端時退避重送「目前這頁」的狀態；換頁就作廢舊的，揭曉／清空不重送 */
+  function navOk(seq) {
+    if (seq !== navSeq) return;
+    navDone = seq; navTry = 0; navWait = 0; clearTimeout(navTimer);
+    if (navBad) { navBad = false; setNet(ws && ws.readyState === 1, '已送到伺服器；即時推播重連中…（按 A 仍可揭曉）'); }
+  }
+  function navFail(seq) {
+    if (seq !== navSeq || OFFLINE) return;            // 已換頁：新的那頁自己會送
+    setNet(false, '連不到投票伺服器，自動重試中（按 A 仍可揭曉）');
+    clearTimeout(navTimer); navWait = seq; navBad = true;
+    if (navTry < 8) navTimer = setTimeout(() => navResend(seq), Math.min(15000, 1000 * 2 ** navTry++));
+  }
+  function navResend(seq) {
+    if (seq !== navSeq || navWait !== seq) return;
+    navWait = 0;
+    const sec = Reveal.getCurrentSlide(), id = sec && sec.dataset.poll;
+    if (id) enterPoll(id, seq); else leavePoll(seq);
+  }
+  function navResendNow() { if (navWait) { clearTimeout(navTimer); navTry = 0; navResend(navWait); } }   // 網路恢復：不必等退避
 
   function startPolling() {
     if (poller || OFFLINE) return;
@@ -976,10 +999,15 @@ cd htmlpptskill && ./install.sh
         if (!r) return;                                   // 排隊期間已換頁
         results[id] = r.results;
       } else if (!await control({ poll: id, phase: 'revealed' }, seq)) return;   // 回到已揭曉的題：讓手機也顯示答案
+      navOk(seq);
       render(id);
     } catch (e) {
       setNet(false, '連不到投票伺服器（按 A 仍可揭曉）');
+      navFail(seq);
     }
+  }
+  function leavePoll(seq) {
+    control({ poll: null }, seq).then(r => { if (r) navOk(seq); }, () => navFail(seq));
   }
 
   async function reveal(id) {
@@ -999,8 +1027,12 @@ cd htmlpptskill && ./install.sh
 
   function onShow(sec) {
     const id = sec && sec.dataset.poll, seq = ++navSeq;
+    navTry = 0;                                               // 每次換頁都有自己的重送次數
     if (id) return enterPoll(id, seq);
-    if (current) { current = null; if (!SIM) control({ poll: null }, seq).catch(() => {}); }
+    const wasPoll = current; current = null;
+    if (SIM) return;
+    if (!wasPoll && navDone === seq - 1) return navOk(seq);   // 本來就沒開題、後端也確認過：不用送
+    leavePoll(seq);                                           // 上一頁的狀態還沒確認（排隊被略過或失敗）也要送
   }
 
   // capture 階段攔截，避免和 reveal.js 內建鍵衝突；只在投票頁生效
