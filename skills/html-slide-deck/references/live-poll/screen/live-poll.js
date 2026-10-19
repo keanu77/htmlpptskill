@@ -220,6 +220,7 @@
 
   function onShow(sec) {
     const id = sec && sec.dataset.poll, seq = ++navSeq;
+    navTry = 0;                                               // 每次換頁都有自己的重送次數
     if (id) return enterPoll(id, seq);
     const wasPoll = current; current = null;
     if (SIM) return;
