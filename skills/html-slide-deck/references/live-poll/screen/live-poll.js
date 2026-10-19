@@ -12,6 +12,7 @@
   const pollSec = id => document.querySelector(`section[data-poll="${id}"]`);
   const results = {};
   let current = null, ws = null, wsRetry = 0, poller = null, navSeq = 0;
+  let navDone = 0, navTry = 0, navTimer = null, navWait = 0, navBad = false;   // 後端已確認的換頁序號；換頁重送的退避狀態
 
   /* ---------------------------------------------------------------- 模擬模式 */
   const SIM = CFG.sim ? (CFG.sim === true ? 60 : CFG.sim) : 0;
@@ -90,7 +91,7 @@
     if (OFFLINE) return setNet(false, '離線模式：按 A 仍可揭曉');
     try { ws = new WebSocket(CFG.url.replace(/^http/, 'ws') + '/ws?role=screen'); }
     catch (e) { return startPolling(); }
-    ws.onopen = () => { wsRetry = 0; setNet(true); stopPolling(); };
+    ws.onopen = () => { wsRetry = 0; setNet(true); stopPolling(); navResendNow(); };
     ws.onmessage = e => { if (e.data !== 'pong') onMessage(JSON.parse(e.data)); };
     ws.onclose = () => {
       setNet(false, '連線中斷，重試中…（按 A 仍可揭曉）');
@@ -99,6 +100,28 @@
     };
   }
   setInterval(() => { if (ws && ws.readyState === 1) ws.send('ping'); }, 25000);
+
+  window.addEventListener('online', () => navResendNow());
+
+  /* 換頁狀態（開題／離開）沒送到後端時退避重送「目前這頁」的狀態；換頁就作廢舊的，揭曉／清空不重送 */
+  function navOk(seq) {
+    if (seq !== navSeq) return;
+    navDone = seq; navTry = 0; navWait = 0; clearTimeout(navTimer);
+    if (navBad) { navBad = false; setNet(ws && ws.readyState === 1, '已送到伺服器；即時推播重連中…（按 A 仍可揭曉）'); }
+  }
+  function navFail(seq) {
+    if (seq !== navSeq || OFFLINE) return;            // 已換頁：新的那頁自己會送
+    setNet(false, '連不到投票伺服器，自動重試中（按 A 仍可揭曉）');
+    clearTimeout(navTimer); navWait = seq; navBad = true;
+    if (navTry < 8) navTimer = setTimeout(() => navResend(seq), Math.min(15000, 1000 * 2 ** navTry++));
+  }
+  function navResend(seq) {
+    if (seq !== navSeq || navWait !== seq) return;
+    navWait = 0;
+    const sec = Reveal.getCurrentSlide(), id = sec && sec.dataset.poll;
+    if (id) enterPoll(id, seq); else leavePoll(seq);
+  }
+  function navResendNow() { if (navWait) { clearTimeout(navTimer); navTry = 0; navResend(navWait); } }   // 網路恢復：不必等退避
 
   function startPolling() {
     if (poller || OFFLINE) return;
@@ -169,10 +192,15 @@
         if (!r) return;                                   // 排隊期間已換頁
         results[id] = r.results;
       } else if (!await control({ poll: id, phase: 'revealed' }, seq)) return;   // 回到已揭曉的題：讓手機也顯示答案
+      navOk(seq);
       render(id);
     } catch (e) {
       setNet(false, '連不到投票伺服器（按 A 仍可揭曉）');
+      navFail(seq);
     }
+  }
+  function leavePoll(seq) {
+    control({ poll: null }, seq).then(r => { if (r) navOk(seq); }, () => navFail(seq));
   }
 
   async function reveal(id) {
@@ -193,7 +221,10 @@
   function onShow(sec) {
     const id = sec && sec.dataset.poll, seq = ++navSeq;
     if (id) return enterPoll(id, seq);
-    if (current) { current = null; if (!SIM) control({ poll: null }, seq).catch(() => {}); }
+    const wasPoll = current; current = null;
+    if (SIM) return;
+    if (!wasPoll && navDone === seq - 1) return navOk(seq);   // 本來就沒開題、後端也確認過：不用送
+    leavePoll(seq);                                           // 上一頁的狀態還沒確認（排隊被略過或失敗）也要送
   }
 
   // capture 階段攔截，避免和 reveal.js 內建鍵衝突；只在投票頁生效
