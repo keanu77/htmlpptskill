@@ -28,6 +28,12 @@ jobs:
           npx playwright install --with-deps chromium
           sudo apt-get install -y fonts-noto-cjk
           npm run all
+      - name: content.js → native PPTX smoke
+        working-directory: skills/html-slide-deck/references/offline-build-template
+        run: |
+          npm install --no-save --no-audit --no-fund pptxgenjs@4
+          node ../../scripts/content-to-pptx.mjs content.js ../../../../qa-out-native.pptx
+          node ../../scripts/content-to-pptx.mjs ../../../../examples/workshop-2026/content.js ../../../../qa-out-workshop.pptx
       - name: Skill QA script on the single-file template
         run: |
           cd skills/html-slide-deck && npm install --no-audit --no-fund && cd ../..

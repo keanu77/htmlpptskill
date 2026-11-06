@@ -22,6 +22,7 @@ Two Agent Skills (open `SKILL.md` format) for Claude Code, Codex CLI, Gemini CLI
 | A misprinted QR code sends the audience to a 404 | QA screenshots **every QR code, decodes it** and compares it with `data-url`; a mismatch exits 1 |
 | AI-generated slides overflow or miss speaker notes | Every slide is screenshotted into one `montage.png`; overflow, JS errors and missing notes are listed |
 | The organizer wants PPTX, you only have HTML | `render-slides` → `build-handout`: one image per slide, speaker notes in the notes pane; PDF in one command |
+| The organizer wants a PPTX they can **edit** | `content-to-pptx`: turns a content.js deck (approach B) into native PowerPoint text, tables and cards, with speaker notes; shrinks text to fit and lists slides that may still overflow |
 | You want the whole room to answer, not one volunteer | **Live audience polling**: scan a QR, vote on the phone, results stream to the slide, press `A` to reveal on every phone |
 | The speaker edited the PPTX by hand | A full worked example of pulling the edits back into HTML |
 
@@ -79,6 +80,8 @@ node $SKILL/scripts/inline-assets.mjs draft.html index.html  # inline reveal.js 
 QA_OFFLINE=1 node $SKILL/scripts/qa-screenshots.mjs index.html qa/     # screenshots, QR, overflow → look at qa/montage.png
 node $SKILL/scripts/render-slides.mjs index.html render/
 node $SKILL/scripts/build-handout.mjs render/ handout.pptx "Speaker"   # image handout with notes
+# content.js decks can also become a native editable PPTX:
+# node $SKILL/scripts/content-to-pptx.mjs content.js editable.pptx --renderers my-renderers.mjs
 node $SKILL/scripts/print-pdf.mjs index.html handout.pdf               # PDF handout
 ```
 

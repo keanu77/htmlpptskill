@@ -43,6 +43,7 @@ Claude Code・Codex CLI・Gemini CLI・Grok Build 都能裝。<br>
 | QR 印錯，台下掃到 404 | QA 會把每張 QR **逐張截圖解碼**，跟你寫的網址比對，不符就 exit 1 |
 | AI 產的投影片文字溢出、少講者備註，播到一半才發現 | 逐頁截圖拼成一張 `montage.png`，溢出、JS 錯誤、缺備註一次列出 |
 | 主辦單位要 PPTX，你只有 HTML | `render-slides` → `build-handout`：一頁一圖的 PPTX，講者備註進備忘稿；PDF 一行指令 |
+| 主辦單位要**能改字**的 PPTX | `content-to-pptx`：做法 B 的 content.js 直接轉原生 PPTX（文字、表格、卡片可編輯、備註帶入、自動縮字並列出可能超框的頁） |
 | 想要「炫一點」但怕翻車 | 效果 skill 分穩重／中間／驚豔三檔，內建減少動態效果與 QA 靜態模式 |
 | 講者在 PPTX 上手改了字，改動回不去 HTML | 附完整實例：從 PPTX 抽文字、解 QR 圖、回灌 HTML |
 | 想讓台下一起作答，又不想把觀眾導去別的平台 | 內附手機即時投票：掃 QR 作答、投影片即時統計、按 `A` 揭曉同步到手機；學會演講現場 60 人使用、150 支手機壓測，斷網照樣能揭曉 |
@@ -100,6 +101,8 @@ QA_OFFLINE=1 node $SKILL/scripts/qa-screenshots.mjs index.html qa/     # 逐頁�
 node $SKILL/scripts/render-slides.mjs index.html render/
 node $SKILL/scripts/build-handout.mjs render/ handout.pptx "講者"       # 圖片型講義（備註進備忘稿）
 node $SKILL/scripts/print-pdf.mjs index.html handout.pdf               # PDF 講義
+# 做法 B（content.js）另可轉原生可編輯 PPTX：
+# node $SKILL/scripts/content-to-pptx.mjs content.js editable.pptx --renderers my-renderers.mjs
 ```
 
 或者什麼都不打，直接跟 agent 說：
@@ -633,7 +636,8 @@ skills/
   html-slide-deck/
     SKILL.md                      主流程（給 agent 讀）
     scripts/                      qa-screenshots、render-slides、build-handout、print-pdf、inline-assets、poll-slides、
-                                  resolve、montage.py、pptx-to-pdf.sh（macOS）、gen-image.sh（可換生圖工具）
+                                  resolve、montage.py、pptx-to-pdf.sh（macOS）、gen-image.sh（可換生圖工具）、
+                                  content-to-pptx（content.js → 原生可編輯 PPTX；pptx-kit 版面工具、pptx-renderers 內建版型）
     references/
       reveal-template.html        深色版型：chip／card／grid／steps／mock／qrcard／viz／互動頁（reveal.js 5.2）
       offline-build-template/     做法 B：content.js＋build.js＋check.mjs＋PLAN.md＋角色檔

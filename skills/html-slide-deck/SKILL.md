@@ -72,7 +72,17 @@ node $SKILL/scripts/build-handout.mjs <dir> <out.pptx> "<作者>"   # 一頁一�
 ```
 **PDF 講義**（最快、跨平台）：`node $SKILL/scripts/print-pdf.mjs <index.html> <out.pdf>`（reveal 的 `?print-pdf`，fragment 全展開；範本已設 `pdfSeparateFragments:false`，否則每個 fragment 各印一頁）。
 
-**原生可編輯 PPTX**：用 `references/pptxgenjs-helpers.mjs`（theme＋helpers：chrome/title/card/pillRow/numberedList/twoCol/frame/mono）逐頁重建，範例見 `references/native-pptx-example.mjs`。字型 **Microsoft JhengHei**（Mac 與 Windows 的 PowerPoint 都有；PingFang 在 PowerPoint Mac 不可用）；等寬 Menlo／Consolas。媒體先轉 JPG。
+**原生可編輯 PPTX，做法 B 一鍵轉**（content.js 已經是結構化內容，不必逐頁手刻）：
+```bash
+node $SKILL/scripts/content-to-pptx.mjs content.js out.pptx [--renderers my-renderers.mjs] [--img-dirs img,assets,shots] [--min-pt 15] [--strict]
+```
+- 16:9 寬版（13.333×7.5 吋）；文字、表格、卡片都是 PowerPoint 物件，講者備註帶入，QR 內嵌成圖（附超連結）。
+- 內建版型：title、section、ask/question、statement、quiz（`reveal:true` 標出正解）、cards/three、stats、flow/steps、table、figure（含 `marks` 圖上標記）、labels、compare、flips（正反面上下並列）、bars、photos、refs、end。欄位對不上或沒有對應版型就改用**通用版面**（標題＋條列＋第一張圖），並列出警告。
+- 專案自訂版型：`--renderers` 模組 `export default (kit) => ({ type: (s, k) => {...} })`，同名覆蓋內建；`kit` 有色票、`plain`、`textWidth`、`grid`、`marker`、`lvTag`；`k` 是 `pptx-kit.mjs` 的 `Kit`（`head`／`text`（自動縮字）／`stack`（直向堆疊並找出放得下的字級）／`card`／`table`／`image`（等比塞進框）／`note`／`src`／`qr`）。
+- 字級下限 `--min-pt`（預設 15pt）；放不下時寫 `<out>.pptx.warnings.txt`，`--strict` 會 exit 1。字寬是估算值（Microsoft JhengHei），**最後一定要用 `pptx-to-pdf.sh` 轉 PDF 拼 montage 看過**。
+- 動畫、fragment、翻牌不轉。
+
+**原生可編輯 PPTX，手刻**（沒有 content.js 時）：用 `references/pptxgenjs-helpers.mjs`（theme＋helpers：chrome/title/card/pillRow/numberedList/twoCol/frame/mono）逐頁重建，範例見 `references/native-pptx-example.mjs`。字型 **Microsoft JhengHei**（Mac 與 Windows 的 PowerPoint 都有；PingFang 在 PowerPoint Mac 不可用）；等寬 Menlo／Consolas。媒體先轉 JPG。
 
 **驗證**：macOS＋PowerPoint 用 `$SKILL/scripts/pptx-to-pdf.sh <in.pptx> <out.pdf>`（原生匯出，只關閉它自己開的文件；首次執行要在螢幕前允許「自動化」權限）。沒有 PowerPoint：圖片型講義本身就是截圖，不必再驗；原生 PPTX 用 LibreOffice `soffice --headless --convert-to pdf` 只能驗位置，不能驗字型。
 

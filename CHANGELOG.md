@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- 新增 `scripts/content-to-pptx.mjs`：做法 B 的 content.js 直接轉**原生可編輯 PPTX**（16:9 寬版、文字／表格／卡片皆可編輯、講者備註、QR 圖＋超連結）。版面工具在 `pptx-kit.mjs`（HTML 片段轉文字 run、依字寬估算自動縮字、`stack` 直向堆疊找最大可用字級、圖片等比放置、表格列高估算），內建 17 種版型在 `pptx-renderers.mjs`，專案版型用 `--renderers` 覆蓋；欄位對不上時改用通用版面並警告，不讓整份失敗。可能超框的頁寫入 `<out>.pptx.warnings.txt`，`--strict` exit 1。源自 2026-11 講座（192 頁，PowerPoint 轉 PDF 逐頁檢查、QR 解碼通過）。
 - **Live Demo**（GitHub Pages）：`demo/` 原始檔 → `docs/index.html`，12 頁示範逐步出現、Auto-Animate、3D 翻卡、頁內測驗、手機投票、滑桿對比；build 時量實際檔案大小當猜數字題的答案。
 - 手機投票新增**模擬模式**：`poll-slides.mjs --polls <polls.json> --sim [人數]`，不連後端、不含 key，可公開；`live-poll.js` 依 `POLL_CFG.sim` 自動跑出作答過程。
 - 新增 `README.en.md`（英文完整說明）、`SECURITY.md`（漏洞回報、ADMIN_KEY 處理與輪替、QA 會執行 JS）；README 開頭放 Live Demo 連結與 45 秒流程 GIF（`docs/demo.gif`）。
